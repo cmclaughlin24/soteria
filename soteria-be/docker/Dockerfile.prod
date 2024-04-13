@@ -1,0 +1,26 @@
+FROM golang:1.22.0-alpine AS BUILD
+
+ARG APPLICATION
+ARG CMD
+
+WORKDIR /build
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY /apps/${APPLICATION} ./apps/${APPLICATION}
+
+RUN go build -o ./${APPLICATION} ./apps/${APPLICATION}/cmd/${CMD}
+
+FROM scratch AS IMAGE
+
+ARG APPLICATION
+
+WORKDIR /app
+
+COPY --from=BUILD /build/${APPLICATION} main
+
+EXPOSE 8080
+
+CMD [ "./main" ]
