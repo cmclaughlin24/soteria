@@ -483,7 +483,7 @@ func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+			sendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,

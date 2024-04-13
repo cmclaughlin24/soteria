@@ -46,15 +46,15 @@ config:
           arrivalRate: 400
           name: 'Max Load (400 arrivals/sec)'
 scenarios:
-  - name: 'Verify Json Web Token (JWT)'
-    flow:
-      - post:
-          url: '/authentication/verify'
-          headers:
-            Content-Type: 'application/json'
-          json:
-            token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJsb2NhbGhvc3Q6ODAwMCIsImF1dGhvcml6YXRpb25fZGV0YWlscyI6WyJub3RpZmljYXRpb249c2VuZF9lbWFpbCxzZW5kX3NtcyxzZW5kX2NhbGwsc2VuZF9wdXNoIiwibm90aWZpY2F0aW9uX2pvYj1zY2hlZHVsZV9lbWFpbCxzY2hlZHVsZV9zbXMsc2NoZWR1bGVfY2FsbCxzY2hlZHVsZV9wdXNoIiwiZGlzdHJpYnV0aW9uX2V2ZW50PWNyZWF0ZSx1cGRhdGUscmVtb3ZlIiwiYXBpX2tleT1jcmVhdGUscmVtb3ZlIiwiZGlzdHJpYnV0aW9uX21lc3NhZ2U9cHVibGlzaCIsInVzZXI9bGlzdCxnZXQsY3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJwZXJtaXNzaW9uPWxpc3QsZ2V0LGNyZWF0ZSx1cGRhdGUscmVtb3ZlIiwiZW1haWxfdGVtcGxhdGU9Y3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJwaG9uZV90ZW1wbGF0ZT1jcmVhdGUsdXBkYXRlLHJlbW92ZSIsInB1c2hfdGVtcGxhdGU9Y3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJkaXN0cmlidXRpb25fcnVsZT1jcmVhdGUsdXBkYXRlLHJlbW92ZSIsInN1YnNjcmlwdGlvbj1jcmVhdGUsdXBkYXRlLHJlbW92ZSJdLCJleHAiOjE3MTMwMjM0MjgsImlhdCI6MTcxMzAxOTgyOCwiaXNzIjoibG9jYWxob3N0OjgwMDAiLCJqdGkiOiJmNDQ1MDg0Mi01YjczLTQ4YjktYmM5NS04MTA0ODFlMzdjMDQiLCJuYW1lIjoiQ3VydGlzIE1jTGF1Z2hsaW4iLCJzdWIiOiI3ZGEzNjA2OC1lMWJjLTQ2ZmQtOWExNy02NGY3M2JlNDNkNTkifQ.n2rq6DEOtDsvZ-pwkWiEx4jRtUcuH6kgLd6d2nXY-ss'
-    weight: 1
+    - name: 'Verify Json Web Token (JWT)'
+      flow:
+        - post:
+            url: '/authentication/verify'
+            headers:
+              Content-Type: 'application/json'
+            json:
+              token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJsb2NhbGhvc3Q6ODAwMCIsImF1dGhvcml6YXRpb25fZGV0YWlscyI6WyJub3RpZmljYXRpb249c2VuZF9lbWFpbCxzZW5kX3NtcyxzZW5kX2NhbGwsc2VuZF9wdXNoIiwibm90aWZpY2F0aW9uX2pvYj1zY2hlZHVsZV9lbWFpbCxzY2hlZHVsZV9zbXMsc2NoZWR1bGVfY2FsbCxzY2hlZHVsZV9wdXNoIiwiZGlzdHJpYnV0aW9uX2V2ZW50PWNyZWF0ZSx1cGRhdGUscmVtb3ZlIiwiYXBpX2tleT1jcmVhdGUscmVtb3ZlIiwiZGlzdHJpYnV0aW9uX21lc3NhZ2U9cHVibGlzaCIsInVzZXI9bGlzdCxnZXQsY3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJwZXJtaXNzaW9uPWxpc3QsZ2V0LGNyZWF0ZSx1cGRhdGUscmVtb3ZlIiwiZW1haWxfdGVtcGxhdGU9Y3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJwaG9uZV90ZW1wbGF0ZT1jcmVhdGUsdXBkYXRlLHJlbW92ZSIsInB1c2hfdGVtcGxhdGU9Y3JlYXRlLHVwZGF0ZSxyZW1vdmUiLCJkaXN0cmlidXRpb25fcnVsZT1jcmVhdGUsdXBkYXRlLHJlbW92ZSIsInN1YnNjcmlwdGlvbj1jcmVhdGUsdXBkYXRlLHJlbW92ZSJdLCJleHAiOjE3MTMwMjM0MjgsImlhdCI6MTcxMzAxOTgyOCwiaXNzIjoibG9jYWxob3N0OjgwMDAiLCJqdGkiOiJmNDQ1MDg0Mi01YjczLTQ4YjktYmM5NS04MTA0ODFlMzdjMDQiLCJuYW1lIjoiQ3VydGlzIE1jTGF1Z2hsaW4iLCJzdWIiOiI3ZGEzNjA2OC1lMWJjLTQ2ZmQtOWExNy02NGY3M2JlNDNkNTkifQ.n2rq6DEOtDsvZ-pwkWiEx4jRtUcuH6kgLd6d2nXY-ss'
+      weight: 1
   - name: 'Verify Api Key'
     flow:
       - post:
