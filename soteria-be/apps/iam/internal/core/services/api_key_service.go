@@ -105,21 +105,51 @@ func (s *ApiKeyService) VerifyApiKey(ctx context.Context, key string) (*domain.A
 }
 
 func (s *ApiKeyService) getApiKey(ctx context.Context, id string) (*domain.ApiKey, error) {
-	var apiKey *domain.ApiKey
+	cacheChan := make(chan *domain.ApiKey)
+	databaseChan := make(chan *domain.ApiKey)
+	errChan := make(chan error, 2)
 	cacheKey := cachKeyHash(apiKeyServiceCacheKey, id)
 
-	if err := s.cache.Get(ctx, cacheKey, &apiKey); err != nil || apiKey == nil {
-		// Fixme: Add informational log that the cache failed to find a result or had an error.
-		apiKey, err = s.repository.FindOne(ctx, id)
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-		if err != nil || apiKey == nil {
-			return nil, fmt.Errorf("api key id=%s could not be retreived from cache or database", id)
+	go func() {
+		var apiKey *domain.ApiKey
+
+		if err := s.cache.Get(ctx, cacheKey, &apiKey); err != nil || apiKey == nil {
+			errChan <- errors.New("failed to retrieve api key from cache")
+			return
 		}
 
+		cacheChan <- apiKey
+	}()
+
+	go func() {
+		apiKey, err := s.repository.FindOne(ctx, id)
+
+		if err != nil || apiKey == nil {
+			errChan <- errors.New("failed to retrieve api key from database")
+			return
+		}
+
+		databaseChan <- apiKey
 		s.cache.Set(ctx, cacheKey, apiKey)
+	}()
+
+	for i := 0; i < 2; i++ {
+		select {
+		case apiKey := <-cacheChan:
+			return apiKey, nil
+		case apiKey := <-databaseChan:
+			return apiKey, nil
+		case <-errChan:
+			// Fixme: Implement structured logging for debugging.
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
 	}
 
-	return apiKey, nil
+	return nil, fmt.Errorf("api key id=%s could not be retrieved from cache or database", id)
 }
 
 func (s ApiKeyService) generateApiKey(claims *domain.ApiKeyClaims) (string, error) {
