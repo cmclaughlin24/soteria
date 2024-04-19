@@ -13,5 +13,6 @@ COPY /apps/${APPLICATION} ./apps/${APPLICATION}
 WORKDIR /app/apps/${APPLICATION}
 
 EXPOSE 8080
+EXPOSE 18080 
 
 CMD [ "air", "-c", ".air.toml" ]
