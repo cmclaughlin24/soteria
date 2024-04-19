@@ -17,11 +17,15 @@ message VerifyApiKeyRequest {
 message AccessTokenClaimsReponse {
   string sub = 1;
   string name = 2;
+  repeated string authorization_details = 3;
+  int64 expiresAt = 4;
 }
 
 message ApiKeyClaimsReponse {
   string sub = 1;
   string name = 2;
+  repeated string authorization_details = 3;
+  int64 expiresAt = 4;
 }
 
 service IamService {

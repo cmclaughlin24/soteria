@@ -49,8 +49,10 @@ func (s *IamGRPCServer) VerifyAccessToken(ctx context.Context, req *iam.VerifyTo
 	}
 
 	return &iam.AccessTokenClaimsReponse{
-		Sub:  claims.Subject,
-		Name: claims.Name,
+		Sub:                  claims.Subject,
+		Name:                 claims.Name,
+		AuthorizationDetails: claims.AuthorizationDetails,
+		ExpiresAt:            claims.ExpiresAt.Unix(),
 	}, nil
 }
 
@@ -64,7 +66,9 @@ func (s *IamGRPCServer) VerifyApiKey(ctx context.Context, req *iam.VerifyApiKeyR
 	}
 
 	return &iam.ApiKeyClaimsReponse{
-		Sub:  claims.Sub,
-		Name: claims.Name,
+		Sub:                  claims.Sub,
+		Name:                 claims.Name,
+		AuthorizationDetails: claims.AuthorizationDetails,
+		ExpiresAt:            claims.ExpiresAt,
 	}, nil
 }
