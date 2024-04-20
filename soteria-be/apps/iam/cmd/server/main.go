@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/adapters/grpc"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/adapters/http/rest"
@@ -9,6 +11,8 @@ import (
 )
 
 func main() {
+	httpPort := os.Getenv("HTTP_PORT")
+	grpcPort := os.Getenv("GRPC_PORT")
 	drivers, err := core.Init()
 
 	if err != nil {
@@ -17,9 +21,9 @@ func main() {
 
 	mux := rest.Routes(drivers)
 	grpcServer := grpc.NewIamGRPCServer(drivers)
-	go grpcServer.Listen("18080")
+	go grpcServer.Listen(grpcPort)
 
-	if err := http.ListenAndServe(":8080", mux); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%s", httpPort), mux); err != nil {
 		panic(err)
 	}
 }
