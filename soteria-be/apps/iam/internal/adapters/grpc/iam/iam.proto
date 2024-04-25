@@ -1,0 +1,34 @@
+// Note: Instructions for generating grpc file https://earthly.dev/blog/golang-grpc-example/
+
+syntax = "proto3";
+
+package iam;
+
+option go_package = "/iam";
+
+message VerifyTokenRequest {
+  string token = 1;
+}
+
+message VerifyApiKeyRequest {
+  string key = 1;
+}
+
+message AccessTokenClaimsReponse {
+  string sub = 1;
+  string name = 2;
+  repeated string authorization_details = 3;
+  int64 expiresAt = 4;
+}
+
+message ApiKeyClaimsReponse {
+  string sub = 1;
+  string name = 2;
+  repeated string authorization_details = 3;
+  int64 expiresAt = 4;
+}
+
+service IamService {
+  rpc VerifyAccessToken(VerifyTokenRequest) returns (AccessTokenClaimsReponse);
+  rpc VerifyApiKey(VerifyApiKeyRequest) returns (ApiKeyClaimsReponse);
+}

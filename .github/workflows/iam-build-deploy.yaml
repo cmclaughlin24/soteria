@@ -1,10 +1,10 @@
 name: Build & Deploy IAM Service
 
 on:
-  - push:
-    branch:
-      - 'main'
-  - workflow_dispatch:
+  push:
+    branches:
+      - 'main' 
+  workflow_dispatch:
 
 jobs: 
   build:
@@ -22,7 +22,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./soteria-be
           file: ./docker/Dockerfile.prod
           push: true
           platforms: linux/arm64,linux/amd64
