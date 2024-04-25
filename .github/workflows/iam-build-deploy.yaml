@@ -9,9 +9,6 @@ on:
 jobs: 
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./soteria-be
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,7 +22,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./soteria-be 
           file: ./docker/Dockerfile.prod
           push: true
           platforms: linux/arm64,linux/amd64
