@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
@@ -8,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func Routes(drivers *ports.Drivers) *chi.Mux {
+func Routes(drivers *ports.Drivers) http.Handler {
 	handler := NewHandler(drivers)
 	mux := chi.NewRouter()
 	accessTokenVerifier := AuthenticateAccessToken(drivers.AuthenticationService)
