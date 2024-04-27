@@ -1,0 +1,40 @@
+name: Gated Check-In (Backend)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'soteria-ui/*'
+  workflow_dispatch:
+    
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.22
+      - name: Install Dependencies
+        run: go mod download
+        working-directory: ./soteria-be
+      - name: Unit Test
+        run: go test -cover -coverprofile=coverage.txt ./...
+      - name: Archieve Code Coverage
+        uses: actions/upload-artifacts@v4
+        with:
+          name: code-coverage
+          path: ./soteria-be/coverage.txt
+  code-coverage:
+    if: github.event_name == 'pull_request'
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Coverage Report
+        uses: fgrosse/go-coverage-report@v1.0.1 
+        with:
+          coverage-artifact-name: code-coverage
+          coverage-file-name: coverage.txt
