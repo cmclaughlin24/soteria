@@ -142,7 +142,29 @@ func TestHandler_updatePermssion(t *testing.T) {
 		statusCode int
 		id         string
 		dto        UpdatePermissionDto
-	}{}
+	}{
+		{
+			"should yield an OK status code if the request was successful",
+			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			http.StatusOK,
+			"1",
+			UpdatePermissionDto{"australian-cattle-dog", "train"},
+		},
+		{
+			"should yield a BAD REQUEST status code if the payload is invalid",
+			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			http.StatusBadRequest,
+			"1",
+			UpdatePermissionDto{},
+		},
+		{
+			"should yield an INTERNAL SERVER ERROR status code if the request fails",
+			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			http.StatusInternalServerError,
+			"1",
+			UpdatePermissionDto{"australian-cattle-dog", "train"},
+		},
+	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
