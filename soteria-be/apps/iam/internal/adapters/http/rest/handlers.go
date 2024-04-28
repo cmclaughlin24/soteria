@@ -349,7 +349,7 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Sucessfully updated user!",
 			Data:    res.data,
 		})
