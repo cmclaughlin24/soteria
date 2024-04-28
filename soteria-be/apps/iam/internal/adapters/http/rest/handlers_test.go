@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -74,6 +76,82 @@ func TestHandler_findPermission(t *testing.T) {
 			req, _ := http.NewRequest("GET", "/permission/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.findPermission)
+
+			// Act.
+			handler.ServeHTTP(rr, req)
+
+			// Assert.
+			if rr.Code != tt.statusCode {
+				t.Errorf("expected status code %d but received %d", tt.statusCode, rr.Code)
+			}
+		})
+	}
+}
+
+func TestHandler_createPermission(t *testing.T) {
+	tests := []struct {
+		name       string
+		drivers    *ports.Drivers
+		statusCode int
+		dto        CreatePermissionDto
+	}{
+		{
+			"should yield an CREATED status code if the request was successful",
+			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			http.StatusCreated,
+			CreatePermissionDto{"australian-cattle-dog", "adopt"},
+		},
+		{
+			"should yield a BAD REQUEST status code if the payload is invalid",
+			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			http.StatusBadRequest,
+			CreatePermissionDto{},
+		},
+		{
+			"should yield an INTERNAL SERVER ERROR status code if the request fails",
+			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			http.StatusInternalServerError,
+			CreatePermissionDto{"australian-cattle-dog", "adopt"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Arrange.
+			h := &Handler{tt.drivers}
+			body, _ := json.Marshal(tt.dto)
+			req, _ := http.NewRequest("POST", "/permission", bytes.NewReader(body))
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(h.createPermission)
+
+			// Act.
+			handler.ServeHTTP(rr, req)
+
+			// Assert.
+			if rr.Code != tt.statusCode {
+				t.Errorf("expected status code %d but received %d", tt.statusCode, rr.Code)
+			}
+		})
+	}
+}
+
+func TestHandler_updatePermssion(t *testing.T) {
+	tests := []struct {
+		name       string
+		drivers    *ports.Drivers
+		statusCode int
+		id         string
+		dto        UpdatePermissionDto
+	}{}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Arrange.
+			h := &Handler{tt.drivers}
+			body, _ := json.Marshal(tt.dto)
+			req, _ := http.NewRequest("PATCH", "/permission/"+tt.id, bytes.NewReader(body))
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(h.updatePermssion)
 
 			// Act.
 			handler.ServeHTTP(rr, req)

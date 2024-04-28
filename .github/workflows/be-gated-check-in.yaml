@@ -24,7 +24,7 @@ jobs:
       - name: Unit Test
         run: go test -cover -coverprofile=coverage.txt ./...
       - name: Archieve Code Coverage
-        uses: actions/upload-artifacts@v4
+        uses: actions/upload-artifact@v4
         with:
           name: code-coverage
           path: ./soteria-be/coverage.txt
