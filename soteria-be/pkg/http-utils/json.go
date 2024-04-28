@@ -1,4 +1,4 @@
-package rest
+package httputils
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func sendJsonResponse(w http.ResponseWriter, statusCode int, data any, headers ...http.Header) error {
+func SendJsonResponse(w http.ResponseWriter, statusCode int, data any, headers ...http.Header) error {
 	out, err := json.Marshal(data)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func sendJsonResponse(w http.ResponseWriter, statusCode int, data any, headers .
 	return nil
 }
 
-func readJsonPayload[T any](r *http.Request, data *T) error {
+func ReadJsonPayload[T any](r *http.Request, data *T) error {
 	decorder := json.NewDecoder(r.Body)
 
 	if err := decorder.Decode(&data); err != nil {

@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
+	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
 )
 
 type Authenticator func(r *http.Request) (auth.Claims, error)
@@ -32,7 +33,7 @@ func Authenticate(authenitactors ...Authenticator) func(http.Handler) http.Handl
 				}
 			}
 
-			sendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
 				Message:    "Unauthorized",
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,
@@ -60,7 +61,7 @@ func Authorize(resource, action string) func(http.Handler) http.Handler {
 				}
 			}
 
-			sendJsonResponse(w, http.StatusForbidden, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusForbidden, ApiErrorResponseDto{
 				Message:    "Forbidden",
 				Error:      "Forbidden",
 				StatusCode: http.StatusForbidden,

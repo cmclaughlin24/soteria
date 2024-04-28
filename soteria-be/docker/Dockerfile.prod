@@ -10,6 +10,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY /apps/${APPLICATION} ./apps/${APPLICATION}
+COPY /pkg ./pkg
 
 RUN go build -o ./${APPLICATION} ./apps/${APPLICATION}/cmd/${CMD}
 

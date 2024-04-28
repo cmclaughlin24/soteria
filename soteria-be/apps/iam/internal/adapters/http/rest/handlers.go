@@ -6,6 +6,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
+	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -37,7 +38,7 @@ func (h *Handler) findPermissions(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -45,7 +46,7 @@ func (h *Handler) findPermissions(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, res.data)
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
 	}
 }
 
@@ -63,7 +64,7 @@ func (h *Handler) findPermission(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -71,15 +72,15 @@ func (h *Handler) findPermission(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, res.data)
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
 	}
 }
 
 func (h *Handler) createPermission(w http.ResponseWriter, r *http.Request) {
 	var dto CreatePermissionDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -103,7 +104,7 @@ func (h *Handler) createPermission(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -111,7 +112,7 @@ func (h *Handler) createPermission(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
 			Message: "Sucessfully created permission!",
 			Data:    res.data,
 		})
@@ -122,8 +123,8 @@ func (h *Handler) updatePermssion(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var dto UpdatePermissionDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -147,7 +148,7 @@ func (h *Handler) updatePermssion(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -155,7 +156,7 @@ func (h *Handler) updatePermssion(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Succesfully updated permission!",
 			Data:    res.data,
 		})
@@ -177,7 +178,7 @@ func (h *Handler) removePermission(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -185,7 +186,7 @@ func (h *Handler) removePermission(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully deleted permission!",
 		})
 	}
@@ -204,7 +205,7 @@ func (h *Handler) findUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -212,7 +213,7 @@ func (h *Handler) findUsers(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, res.data)
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
 	}
 }
 
@@ -230,7 +231,7 @@ func (h *Handler) findUser(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -238,15 +239,15 @@ func (h *Handler) findUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, res.data)
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
 	}
 }
 
 func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	var dto CreateUserDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -283,7 +284,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -291,7 +292,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
 			Message: "Sucessfully created user!",
 			Data:    res.data,
 		})
@@ -302,8 +303,8 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var dto UpdateUserDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -340,7 +341,7 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -348,7 +349,7 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
 			Message: "Sucessfully updated user!",
 			Data:    res.data,
 		})
@@ -369,7 +370,7 @@ func (h *Handler) removeUser(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -377,7 +378,7 @@ func (h *Handler) removeUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully deleted user!",
 		})
 	}
@@ -386,8 +387,8 @@ func (h *Handler) removeUser(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) createApiKey(w http.ResponseWriter, r *http.Request) {
 	var dto CreateApiKeyDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -417,7 +418,7 @@ func (h *Handler) createApiKey(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -425,7 +426,7 @@ func (h *Handler) createApiKey(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
 			Message: "Sucessfully created api key!",
 			Data:    res.data,
 		})
@@ -446,14 +447,14 @@ func (h *Handler) removeApiKey(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
 			})
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully deleted user!",
 		})
 	}
@@ -462,8 +463,8 @@ func (h *Handler) removeApiKey(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 	var dto VerifyApiKeyDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -483,7 +484,7 @@ func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,
@@ -491,7 +492,7 @@ func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully authenicated!",
 			Data:    res.data,
 		})
@@ -501,8 +502,8 @@ func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) signup(w http.ResponseWriter, r *http.Request) {
 	var dto SignUpDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -530,7 +531,7 @@ func (h *Handler) signup(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -538,7 +539,7 @@ func (h *Handler) signup(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusCreated, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusCreated, ApiResponseDto{
 			Message: "Successfully signed up!",
 		})
 	}
@@ -547,8 +548,8 @@ func (h *Handler) signup(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) signin(w http.ResponseWriter, r *http.Request) {
 	var dto SignInDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -568,7 +569,7 @@ func (h *Handler) signin(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, ApiErrorResponseDto{
 				Message:    res.err.Error(),
 				Error:      "Internal Server Error",
 				StatusCode: http.StatusInternalServerError,
@@ -576,7 +577,7 @@ func (h *Handler) signin(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully logged in!",
 			Data:    res.data,
 		})
@@ -586,8 +587,8 @@ func (h *Handler) signin(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) verifyAccessToken(w http.ResponseWriter, r *http.Request) {
 	var dto TokenDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -607,7 +608,7 @@ func (h *Handler) verifyAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
 				Message:    "Invalid access token",
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,
@@ -615,7 +616,7 @@ func (h *Handler) verifyAccessToken(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully authenicated!",
 			Data:    res.data,
 		})
@@ -625,8 +626,8 @@ func (h *Handler) verifyAccessToken(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) refreshAccessToken(w http.ResponseWriter, r *http.Request) {
 	var dto TokenDto
 
-	if err := readJsonPayload(r, &dto); err != nil {
-		sendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, ApiErrorResponseDto{
 			Message:    err.Error(),
 			Error:      "Bad Request",
 			StatusCode: http.StatusBadRequest,
@@ -646,7 +647,7 @@ func (h *Handler) refreshAccessToken(w http.ResponseWriter, r *http.Request) {
 		return
 	case res := <-resultChan:
 		if res.err != nil {
-			sendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
 				Message:    "Invalid refresh token",
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,
@@ -654,7 +655,7 @@ func (h *Handler) refreshAccessToken(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		sendJsonResponse(w, http.StatusOK, ApiResponseDto{
+		httputils.SendJsonResponse(w, http.StatusOK, ApiResponseDto{
 			Message: "Successfully refreshed tokens!",
 			Data:    res.data,
 		})
