@@ -22,7 +22,7 @@ services:
         APPLICATION: iam
     ports:
       - '8000:8080'
-      - '8001:18080'
+      - '18000:18080'
     env_file:
       - ./env/iam.env
     volumes:
@@ -30,6 +30,24 @@ services:
     tty: true
     stdin_open: true
     depends_on:
+      - postgres
+      - redis
+  facility:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.dev
+      args:
+        APPLICATION: facility
+    ports:
+      - '8002:8080'
+    env_file:
+      - ./env/facility.env
+    volumes:
+      - './apps/facility:/app/apps/facility'
+    tty: true
+    stdin_open: true
+    depends_on:
+      - iam
       - postgres
       - redis
 volumes:
