@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
+	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 )
 
 type SuccessApiKeyService struct {
@@ -14,7 +15,7 @@ func NewSuccessApiKeyService() *SuccessApiKeyService {
 	return &SuccessApiKeyService{}
 }
 
-func (s *SuccessApiKeyService) Create(_ context.Context, _ string, _ []domain.UserPermission, _ string) (string, error) {
+func (s *SuccessApiKeyService) Create(_ context.Context, _ string, _ []auth.UserPermission, _ string) (string, error) {
 	return "", nil
 }
 
@@ -32,7 +33,7 @@ func NewErrorApiKeyService() *ErrorApiKeyService {
 	return &ErrorApiKeyService{}
 }
 
-func (s *ErrorApiKeyService) Create(_ context.Context, _ string, _ []domain.UserPermission, _ string) (string, error) {
+func (s *ErrorApiKeyService) Create(_ context.Context, _ string, _ []auth.UserPermission, _ string) (string, error) {
 	return "", errors.New("mock error from coretest package")
 }
 

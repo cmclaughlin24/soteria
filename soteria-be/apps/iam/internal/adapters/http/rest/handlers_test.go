@@ -11,7 +11,7 @@ import (
 	coretest "github.com/cmclaughlin24/soteria-be/apps/iam/internal/core-test"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 )
 
 func TestHandler_findPermissions(t *testing.T) {

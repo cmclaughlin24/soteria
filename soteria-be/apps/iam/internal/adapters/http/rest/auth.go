@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
 )
 

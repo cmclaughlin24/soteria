@@ -5,7 +5,7 @@ import (
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
 	"github.com/go-chi/chi/v5"
 )
@@ -266,7 +266,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	)
 
 	for _, permissionDto := range dto.Permissions {
-		u.AddPermission(domain.UserPermission{
+		u.AddPermission(auth.UserPermission{
 			Resource: permissionDto.Resource,
 			Action:   permissionDto.Action,
 		})
@@ -323,7 +323,7 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 	)
 
 	for _, permissionDto := range dto.Permissions {
-		u.AddPermission(domain.UserPermission{
+		u.AddPermission(auth.UserPermission{
 			Resource: permissionDto.Resource,
 			Action:   permissionDto.Action,
 		})
@@ -396,10 +396,10 @@ func (h *Handler) createApiKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	permissions := make([]domain.UserPermission, 0, len(dto.Permissions))
+	permissions := make([]auth.UserPermission, 0, len(dto.Permissions))
 
 	for _, permissionDto := range dto.Permissions {
-		permissions = append(permissions, domain.UserPermission{
+		permissions = append(permissions, auth.UserPermission{
 			Resource: permissionDto.Resource,
 			Action:   permissionDto.Action,
 		})

@@ -1,20 +1,13 @@
 package auth
 
-import (
-	"context"
-	"strings"
+import "strings"
 
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
-)
-
-const ClaimsContextKey = "claims"
-
-type Claims interface {
-	GetSubject() (string, error)
-	GetAuthorizationDetails() []string
+type UserPermission struct {
+	Resource string `json:"resource"`
+	Action   string `json:"action"`
 }
 
-func PackPermissions(permissions []domain.UserPermission) []string {
+func PackPermissions(permissions []UserPermission) []string {
 	if len(permissions) == 0 {
 		return make([]string, 0)
 	}
@@ -53,12 +46,4 @@ func UnpackPermissions(permissions []string) map[string][]string {
 	}
 
 	return m
-}
-
-func SetContext(ctx context.Context, claims Claims) context.Context {
-	return context.WithValue(ctx, ClaimsContextKey, claims)
-}
-
-func ClaimsFromContext(ctx context.Context) Claims {
-	return ctx.Value(ClaimsContextKey).(Claims)
 }

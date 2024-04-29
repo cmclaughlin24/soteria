@@ -7,8 +7,8 @@ import (
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/auth"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/hash"
+	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
