@@ -1,16 +1,5 @@
 package rest
 
-type ApiResponseDto struct {
-	Message string `json:"message"`
-	Data    any    `json:"data,omitempty"`
-}
-
-type ApiErrorResponseDto struct {
-	Message    string `json:"message"`
-	Error      string `json:"error"`
-	StatusCode int    `json:"statusCode"`
-}
-
 type CreatePermissionDto struct {
 	Resource string `json:"resource" validate:"required"`
 	Action   string `json:"action" validate:"required"`

@@ -1,4 +1,4 @@
-package rest
+package auth
 
 import (
 	"context"
@@ -7,11 +7,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
 	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
 )
 
-type Authenticator func(r *http.Request) (auth.Claims, error)
+type Authenticator func(r *http.Request) (Claims, error)
 
 func Authenticate(authenitactors ...Authenticator) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
@@ -27,13 +26,13 @@ func Authenticate(authenitactors ...Authenticator) func(http.Handler) http.Handl
 				valOfClaims := reflect.ValueOf(claims)
 
 				if valOfClaims.IsValid() && !valOfClaims.IsZero() {
-					r = r.WithContext(auth.SetContext(r.Context(), claims))
+					r = r.WithContext(SetContext(r.Context(), claims))
 					next.ServeHTTP(w, r)
 					return
 				}
 			}
 
-			httputils.SendJsonResponse(w, http.StatusUnauthorized, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusUnauthorized, httputils.ApiErrorResponseDto{
 				Message:    "Unauthorized",
 				Error:      "Unauthorized",
 				StatusCode: http.StatusUnauthorized,
@@ -45,8 +44,8 @@ func Authenticate(authenitactors ...Authenticator) func(http.Handler) http.Handl
 func Authorize(resource, action string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			claims := auth.ClaimsFromContext(r.Context())
-			permissions := auth.UnpackPermissions(claims.GetAuthorizationDetails())
+			claims := ClaimsFromContext(r.Context())
+			permissions := UnpackPermissions(claims.GetAuthorizationDetails())
 
 			for res, actions := range permissions {
 				if res != resource {
@@ -61,7 +60,7 @@ func Authorize(resource, action string) func(http.Handler) http.Handler {
 				}
 			}
 
-			httputils.SendJsonResponse(w, http.StatusForbidden, ApiErrorResponseDto{
+			httputils.SendJsonResponse(w, http.StatusForbidden, httputils.ApiErrorResponseDto{
 				Message:    "Forbidden",
 				Error:      "Forbidden",
 				StatusCode: http.StatusForbidden,
@@ -70,12 +69,12 @@ func Authorize(resource, action string) func(http.Handler) http.Handler {
 	}
 }
 
-type AccessTokenVerifier[T auth.Claims] interface {
+type AccessTokenVerifier[T Claims] interface {
 	VerifyAccessToken(context.Context, string) (T, error)
 }
 
-func AuthenticateAccessToken[T auth.Claims](verifier AccessTokenVerifier[T]) Authenticator {
-	return func(r *http.Request) (auth.Claims, error) {
+func AuthenticateAccessToken[T Claims](verifier AccessTokenVerifier[T]) Authenticator {
+	return func(r *http.Request) (Claims, error) {
 		token := strings.Split(r.Header.Get("Authorization"), " ")
 
 		if len(token) != 2 {
@@ -90,12 +89,12 @@ func AuthenticateAccessToken[T auth.Claims](verifier AccessTokenVerifier[T]) Aut
 	}
 }
 
-type ApiKeyVerifier[T auth.Claims] interface {
+type ApiKeyVerifier[T Claims] interface {
 	VerifyApiKey(context.Context, string) (T, error)
 }
 
-func AuthenticateApiKey[T auth.Claims](verifier ApiKeyVerifier[T]) Authenticator {
-	return func(r *http.Request) (auth.Claims, error) {
+func AuthenticateApiKey[T Claims](verifier ApiKeyVerifier[T]) Authenticator {
+	return func(r *http.Request) (Claims, error) {
 		key := strings.Split(r.Header.Get("Authorization"), " ")
 
 		if len(key) != 2 {
