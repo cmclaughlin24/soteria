@@ -11,7 +11,7 @@ import (
 	coretest "github.com/cmclaughlin24/soteria-be/apps/iam/internal/core-test"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
 func TestHandler_findPermissions(t *testing.T) {
@@ -507,7 +507,7 @@ func TestHandler_createApiKey(t *testing.T) {
 			h := &Handler{tt.drivers}
 			claims := domain.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
-			req, _ := http.NewRequestWithContext(auth.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
+			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.createApiKey)
 
@@ -548,7 +548,7 @@ func TestHandler_removeApiKey(t *testing.T) {
 			// Arrange.
 			h := &Handler{tt.drivers}
 			claims := domain.AccessTokenClaims{}
-			req, _ := http.NewRequestWithContext(auth.SetContext(context.Background(), claims), "DELETE", "/api-keys/"+tt.id, nil)
+			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "DELETE", "/api-keys/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.removeApiKey)
 
@@ -596,7 +596,7 @@ func TestHandler_verifyApiKey(t *testing.T) {
 			h := &Handler{tt.drivers}
 			claims := domain.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
-			req, _ := http.NewRequestWithContext(auth.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
+			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.verifyApiKey)
 

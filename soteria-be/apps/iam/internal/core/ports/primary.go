@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
 type ApiKeyService interface {
-	Create(context.Context, string, []auth.UserPermission, string) (string, error)
+	Create(context.Context, string, []iam.UserPermission, string) (string, error)
 	Remove(context.Context, string) error
 	VerifyApiKey(context.Context, string) (*domain.ApiKeyClaims, error)
 }

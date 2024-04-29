@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
 type userPermissionEntity struct {
@@ -277,7 +277,7 @@ func (r *PgxUserRepository) find(ctx context.Context, options struct {
 		}
 
 		if p.Resource.Valid && p.Action.Valid {
-			u.AddPermission(auth.UserPermission{
+			u.AddPermission(iam.UserPermission{
 				Resource: p.Resource.String,
 				Action:   p.Action.String,
 			})
@@ -296,7 +296,7 @@ func (r *PgxUserRepository) find(ctx context.Context, options struct {
 	return users, nil
 }
 
-func (r *PgxUserRepository) findPermissions(ctx context.Context, userPermissions []auth.UserPermission) ([]string, error) {
+func (r *PgxUserRepository) findPermissions(ctx context.Context, userPermissions []iam.UserPermission) ([]string, error) {
 	query := "SELECT id FROM permission WHERE resource = $1 AND action = $2"
 	permissions := make([]string, 0)
 

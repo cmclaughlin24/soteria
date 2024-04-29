@@ -8,7 +8,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/hash"
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
@@ -133,7 +133,7 @@ Yields a struct containing JWT access and refresh tokens.
 func (s *AuthenticationService) generateTokens(u *domain.User) (*domain.Tokens, error) {
 	jwtId := uuid.New()
 	refreshTokenId := uuid.New()
-	permissions := auth.PackPermissions(u.Permissions)
+	permissions := iam.PackPermissions(u.Permissions)
 
 	accessToken, err := s.signToken(u.Id, s.signOptions.Ttl, jwt.MapClaims{
 		"name":                  u.Name,

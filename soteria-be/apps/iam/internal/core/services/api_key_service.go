@@ -12,7 +12,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/hash"
-	"github.com/cmclaughlin24/soteria-be/pkg/auth"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 	"github.com/google/uuid"
 )
 
@@ -33,13 +33,13 @@ func NewApiKeyService(repository ports.ApiKeyRepository, hashService hash.HashSe
 	}
 }
 
-func (s *ApiKeyService) Create(ctx context.Context, name string, permissions []auth.UserPermission, createdBy string) (string, error) {
+func (s *ApiKeyService) Create(ctx context.Context, name string, permissions []iam.UserPermission, createdBy string) (string, error) {
 	apiKeyId := uuid.New()
 	expiresAt := time.Now().AddDate(1, 0, 0)
 	claims := domain.ApiKeyClaims{
 		Sub:                  apiKeyId.String(),
 		Name:                 name,
-		AuthorizationDetails: auth.PackPermissions(permissions), // Todo: Should probably load permissions exist since not coming from database.
+		AuthorizationDetails: iam.PackPermissions(permissions), // Todo: Should probably load permissions exist since not coming from database.
 		ExpiresAt:            expiresAt.Unix(),
 	}
 	encodedKey, err := s.generateApiKey(&claims)
