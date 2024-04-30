@@ -36,7 +36,7 @@ func NewApiKeyService(repository ports.ApiKeyRepository, hashService hash.HashSe
 func (s *ApiKeyService) Create(ctx context.Context, name string, permissions []iam.UserPermission, createdBy string) (string, error) {
 	apiKeyId := uuid.New()
 	expiresAt := time.Now().AddDate(1, 0, 0)
-	claims := domain.ApiKeyClaims{
+	claims := iam.ApiKeyClaims{
 		Sub:                  apiKeyId.String(),
 		Name:                 name,
 		AuthorizationDetails: iam.PackPermissions(permissions), // Todo: Should probably load permissions exist since not coming from database.
@@ -77,7 +77,7 @@ func (s *ApiKeyService) Remove(ctx context.Context, id string) error {
 /*
 Yields a struct containing the api key claims if the token is valid.
 */
-func (s *ApiKeyService) VerifyApiKey(ctx context.Context, key string) (*domain.ApiKeyClaims, error) {
+func (s *ApiKeyService) VerifyApiKey(ctx context.Context, key string) (*iam.ApiKeyClaims, error) {
 	claims, err := s.extractApiKeyData(key)
 
 	if err != nil {
@@ -152,7 +152,7 @@ func (s *ApiKeyService) getApiKey(ctx context.Context, id string) (*domain.ApiKe
 	return nil, fmt.Errorf("api key id=%s could not be retrieved from cache or database", id)
 }
 
-func (s ApiKeyService) generateApiKey(claims *domain.ApiKeyClaims) (string, error) {
+func (s ApiKeyService) generateApiKey(claims *iam.ApiKeyClaims) (string, error) {
 	out, err := json.Marshal(claims)
 
 	if err != nil {
@@ -162,14 +162,14 @@ func (s ApiKeyService) generateApiKey(claims *domain.ApiKeyClaims) (string, erro
 	return base64.StdEncoding.EncodeToString([]byte(out)), nil
 }
 
-func (s ApiKeyService) extractApiKeyData(key string) (*domain.ApiKeyClaims, error) {
+func (s ApiKeyService) extractApiKeyData(key string) (*iam.ApiKeyClaims, error) {
 	data, err := base64.StdEncoding.DecodeString(key)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var claims domain.ApiKeyClaims
+	var claims iam.ApiKeyClaims
 
 	if err := json.Unmarshal(data, &claims); err != nil {
 		return nil, err

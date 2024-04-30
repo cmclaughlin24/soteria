@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
 type SuccessAuthenticationService struct {
@@ -18,8 +19,8 @@ func (s *SuccessAuthenticationService) Signin(_ context.Context, _, _ string) (*
 	return &domain.Tokens{}, nil
 }
 
-func (s *SuccessAuthenticationService) VerifyAccessToken(_ context.Context, _ string) (*domain.AccessTokenClaims, error) {
-	return &domain.AccessTokenClaims{}, nil
+func (s *SuccessAuthenticationService) VerifyAccessToken(_ context.Context, _ string) (*iam.AccessTokenClaims, error) {
+	return &iam.AccessTokenClaims{}, nil
 }
 
 func (s *SuccessAuthenticationService) RefreshAccessToken(_ context.Context, _ string) (*domain.Tokens, error) {
@@ -36,7 +37,7 @@ func (s *ErrorAuthenticationService) Signin(_ context.Context, _, _ string) (*do
 	return nil, errors.New("mock error from coretest package")
 }
 
-func (s *ErrorAuthenticationService) VerifyAccessToken(_ context.Context, _ string) (*domain.AccessTokenClaims, error) {
+func (s *ErrorAuthenticationService) VerifyAccessToken(_ context.Context, _ string) (*iam.AccessTokenClaims, error) {
 	return nil, errors.New("mock error from coretest package")
 }
 

@@ -16,16 +16,6 @@ func NewTokens(accessToken, refreshToken string) *Tokens {
 	}
 }
 
-type AccessTokenClaims struct {
-	Name                 string   `json:"name"`
-	AuthorizationDetails []string `json:"authorization_details"`
-	jwt.RegisteredClaims
-}
-
-func (c AccessTokenClaims) GetAuthorizationDetails() []string {
-	return c.AuthorizationDetails
-}
-
 type RefreshTokenClaims struct {
 	RefreshTokenId string `json:"refreshTokenId"`
 	jwt.RegisteredClaims

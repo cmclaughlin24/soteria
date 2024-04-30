@@ -10,12 +10,12 @@ import (
 type ApiKeyService interface {
 	Create(context.Context, string, []iam.UserPermission, string) (string, error)
 	Remove(context.Context, string) error
-	VerifyApiKey(context.Context, string) (*domain.ApiKeyClaims, error)
+	VerifyApiKey(context.Context, string) (*iam.ApiKeyClaims, error)
 }
 
 type AuthenticationService interface {
 	Signin(context.Context, string, string) (*domain.Tokens, error)
-	VerifyAccessToken(context.Context, string) (*domain.AccessTokenClaims, error)
+	VerifyAccessToken(context.Context, string) (*iam.AccessTokenClaims, error)
 	RefreshAccessToken(context.Context, string) (*domain.Tokens, error)
 }
 

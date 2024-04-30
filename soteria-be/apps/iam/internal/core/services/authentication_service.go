@@ -66,8 +66,8 @@ Yields a struct containing the access token claims if the token is valid.
 Note: An access token id (jti) is validated against the jti stored to ensure
 only a single access token is issued for a user.
 */
-func (s *AuthenticationService) VerifyAccessToken(ctx context.Context, token string) (*domain.AccessTokenClaims, error) {
-	claims, err := s.verify(token, &domain.AccessTokenClaims{})
+func (s *AuthenticationService) VerifyAccessToken(ctx context.Context, token string) (*iam.AccessTokenClaims, error) {
+	claims, err := s.verify(token, &iam.AccessTokenClaims{})
 
 	if err != nil {
 		return nil, err
@@ -79,13 +79,13 @@ func (s *AuthenticationService) VerifyAccessToken(ctx context.Context, token str
 		return nil, err
 	}
 
-	jwtId := claims.(*domain.AccessTokenClaims).ID
+	jwtId := claims.(*iam.AccessTokenClaims).ID
 
 	if isValid, err := s.tokenStorage.ValidateAccess(ctx, userId, jwtId); !isValid || err != nil {
 		return nil, errors.New("failed to validate access token id")
 	}
 
-	return claims.(*domain.AccessTokenClaims), nil
+	return claims.(*iam.AccessTokenClaims), nil
 }
 
 /*

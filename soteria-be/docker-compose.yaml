@@ -21,7 +21,7 @@ services:
       args:
         APPLICATION: iam
     ports:
-      - '8000:8080'
+      - '8000:80'
       - '18000:18080'
     env_file:
       - ./env/iam.env
@@ -39,7 +39,7 @@ services:
       args:
         APPLICATION: facility
     ports:
-      - '8001:8080'
+      - '8001:80'
     env_file:
       - ./env/facility.env
     volumes:

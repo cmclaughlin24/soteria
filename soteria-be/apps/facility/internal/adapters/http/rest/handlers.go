@@ -6,6 +6,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core/ports"
 	httputils "github.com/cmclaughlin24/soteria-be/pkg/http-utils"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -87,14 +88,14 @@ func (h *Handler) createFacility(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sub, _ := iam.ClaimsFromContext(r.Context()).GetSubject()
 	resultChan := make(chan result)
 
 	go func() {
 		f, err := h.drivers.FacilityService.Create(r.Context(), domain.Facility{
-			Code: dto.Code,
-			Name: dto.Name,
-			// Fixme: Replace with subject from claims.
-			CreatedBy: "placeholder",
+			Code:      dto.Code,
+			Name:      dto.Name,
+			CreatedBy: sub,
 		})
 		resultChan <- result{f, err}
 	}()
@@ -132,14 +133,14 @@ func (h *Handler) updateFacility(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	sub, _ := iam.ClaimsFromContext(r.Context()).GetSubject()
 	resultChan := make(chan result)
 
 	go func() {
 		f, err := h.drivers.FacilityService.Update(r.Context(), domain.Facility{
-			Code: code,
-			Name: dto.Name,
-			// Fixme: Replace with subject from claims.
-			UpdatedBy: "placeholder",
+			Code:      code,
+			Name:      dto.Name,
+			UpdatedBy: sub,
 		})
 		resultChan <- result{f, err}
 	}()

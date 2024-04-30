@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
@@ -23,8 +22,8 @@ func (s *SuccessApiKeyService) Remove(_ context.Context, _ string) error {
 	return nil
 }
 
-func (s *SuccessApiKeyService) VerifyApiKey(_ context.Context, _ string) (*domain.ApiKeyClaims, error) {
-	return &domain.ApiKeyClaims{}, nil
+func (s *SuccessApiKeyService) VerifyApiKey(_ context.Context, _ string) (*iam.ApiKeyClaims, error) {
+	return &iam.ApiKeyClaims{}, nil
 }
 
 type ErrorApiKeyService struct{}
@@ -41,6 +40,6 @@ func (s *ErrorApiKeyService) Remove(_ context.Context, _ string) error {
 	return errors.New("mock error from coretest package")
 }
 
-func (s *ErrorApiKeyService) VerifyApiKey(_ context.Context, _ string) (*domain.ApiKeyClaims, error) {
+func (s *ErrorApiKeyService) VerifyApiKey(_ context.Context, _ string) (*iam.ApiKeyClaims, error) {
 	return nil, errors.New("mock error from coretest package")
 }

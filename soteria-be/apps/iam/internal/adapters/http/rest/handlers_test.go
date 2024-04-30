@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	coretest "github.com/cmclaughlin24/soteria-be/apps/iam/internal/core-test"
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
 	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
@@ -505,7 +504,7 @@ func TestHandler_createApiKey(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
 			h := &Handler{tt.drivers}
-			claims := domain.AccessTokenClaims{}
+			claims := iam.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -547,7 +546,7 @@ func TestHandler_removeApiKey(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
 			h := &Handler{tt.drivers}
-			claims := domain.AccessTokenClaims{}
+			claims := iam.AccessTokenClaims{}
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "DELETE", "/api-keys/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.removeApiKey)
@@ -594,7 +593,7 @@ func TestHandler_verifyApiKey(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
 			h := &Handler{tt.drivers}
-			claims := domain.AccessTokenClaims{}
+			claims := iam.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
 			rr := httptest.NewRecorder()

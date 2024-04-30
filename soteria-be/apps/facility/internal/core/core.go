@@ -14,6 +14,7 @@ func Init() (*ports.Drivers, error) {
 	}
 
 	return &ports.Drivers{
-		FacilityService: services.NewFacilityService(repositories.FacilityRepository),
+		AuthenticationService: services.NewAuthenticationService(),
+		FacilityService:       services.NewFacilityService(repositories.FacilityRepository),
 	}, nil
 }
