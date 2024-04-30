@@ -39,7 +39,7 @@ services:
       args:
         APPLICATION: facility
     ports:
-      - '8002:8080'
+      - '8001:8080'
     env_file:
       - ./env/facility.env
     volumes:

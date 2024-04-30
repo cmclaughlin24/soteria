@@ -13,3 +13,7 @@ type FacilityService interface {
 	Update(context.Context, domain.Facility) (*domain.Facility, error)
 	Remove(context.Context, string) error
 }
+
+type Drivers struct {
+	FacilityService FacilityService
+}

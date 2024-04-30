@@ -82,10 +82,9 @@ func (r *PgxUserRepository) Create(ctx context.Context, u domain.User) (*domain.
 			phoneNumber,
 			password,
 			deliveryMethods,
-			timeZone,
-			createdAt
+			timeZone
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		VALUES ($1, $2, $3, $4, $5, $6)
 		RETURNING id
 	`)
 
@@ -102,7 +101,6 @@ func (r *PgxUserRepository) Create(ctx context.Context, u domain.User) (*domain.
 		u.Password,
 		u.DeliveryMethods,
 		u.TimeZone,
-		time.Now(),
 	)
 
 	var userId string

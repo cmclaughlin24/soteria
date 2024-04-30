@@ -6,12 +6,18 @@ import (
 	"os"
 
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/adapters/http/rest"
+	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core"
 )
 
 func main() {
 	httpPort := os.Getenv("HTTP_PORT")
+	drivers, err := core.Init()
 
-	mux := rest.Routes()
+	if err != nil {
+		panic(err)
+	}
+
+	mux := rest.Routes(drivers)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", httpPort), mux); err != nil {
 		panic(err)

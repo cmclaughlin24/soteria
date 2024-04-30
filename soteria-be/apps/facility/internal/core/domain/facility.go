@@ -1,7 +1,7 @@
 package domain
 
 type Facility struct {
-	Id        string `json:"id"`
+	Code      string `json:"code"`
 	Name      string `json:"name"`
 	CreatedBy string `json:"-"`
 	UpdatedBy string `json:"-"`

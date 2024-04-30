@@ -58,7 +58,7 @@ func createTables(db *sql.DB) error {
 			password VARCHAR(250) NOT NULL,
 			deliveryMethods TEXT[] NULL,
 			timeZone VARCHAR(50) DEFAULT 'Etc/UTC',
-			createdAt TIMESTAMP NOT NULL,
+			createdAt TIMESTAMP DEFAULT NOW(),
 			updatedAt TIMESTAMP NULL,
 			PRIMARY KEY(id)
 		)

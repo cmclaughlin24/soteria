@@ -1,3 +1,3 @@
-INSERT INTO User_Permissions_Permission ("userid", "permissionId")
-SELECT '7da36068-e1bc-46fd-9a17-64f73be43d59', id
+INSERT INTO User_Permissions_Permission ("userid", "permissionid")
+SELECT '0b8f378f-7daf-4211-836d-b7212c7d84e4', id
 FROM Permission
