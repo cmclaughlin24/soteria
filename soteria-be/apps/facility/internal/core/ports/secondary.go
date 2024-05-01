@@ -4,7 +4,13 @@ import (
 	"context"
 
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core/domain"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
+
+type IamClient interface {
+	VerifyAccessToken(context.Context, string) (*iam.AccessTokenClaims, error)
+	VerifyApiKey(context.Context, string) (*iam.ApiKeyClaims, error)
+}
 
 type FacilityRepository interface {
 	FindAll(context.Context) ([]domain.Facility, error)

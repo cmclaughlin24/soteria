@@ -4,6 +4,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/adapters/persistance"
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core/ports"
 	"github.com/cmclaughlin24/soteria-be/apps/facility/internal/core/services"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
 func Init() (*ports.Drivers, error) {
@@ -14,7 +15,7 @@ func Init() (*ports.Drivers, error) {
 	}
 
 	return &ports.Drivers{
-		AuthenticationService: services.NewAuthenticationService(),
+		AuthenticationService: services.NewAuthenticationService(&iam.IamHttpClient{}),
 		FacilityService:       services.NewFacilityService(repositories.FacilityRepository),
 	}, nil
 }
