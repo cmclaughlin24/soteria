@@ -35,9 +35,9 @@ type UserService interface {
 	Remove(context.Context, string) error
 }
 
-type Drivers struct {
-	ApiKeyService         ApiKeyService
-	AuthenticationService AuthenticationService
-	PermissionsService    PermissionService
-	UserService           UserService
+type Services struct {
+	ApiKey         ApiKeyService
+	Authentication AuthenticationService
+	Permission     PermissionService
+	User           UserService
 }

@@ -33,7 +33,7 @@ func TestRoutes(t *testing.T) {
 		{"/users/{id}", "PATCH"},
 		{"/users/{id}", "DELETE"},
 	}
-	mux := Routes(&ports.Drivers{})
+	mux := Routes(&ports.Services{})
 
 	for _, r := range routes {
 		// Act/Assert.

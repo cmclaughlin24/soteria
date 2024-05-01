@@ -13,14 +13,14 @@ import (
 func main() {
 	httpPort := os.Getenv("HTTP_PORT")
 	grpcPort := os.Getenv("GRPC_PORT")
-	drivers, err := core.Init()
+	services, err := core.Init()
 
 	if err != nil {
 		panic(err)
 	}
 
-	mux := rest.Routes(drivers)
-	grpcServer := grpc.NewIamGRPCServer(drivers)
+	mux := rest.Routes(services)
+	grpcServer := grpc.NewIamGRPCServer(services)
 	go grpcServer.Listen(grpcPort)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", httpPort), mux); err != nil {

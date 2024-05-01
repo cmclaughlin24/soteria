@@ -10,7 +10,10 @@ import (
 	"net/http"
 )
 
-type IamHttpClient struct{}
+type IamHttpClient struct {
+	AccessTokenUrl string
+	ApiKeyUrl      string
+}
 
 func (s *IamHttpClient) VerifyAccessToken(ctx context.Context, token string) (*AccessTokenClaims, error) {
 	if token == "" {
@@ -20,10 +23,7 @@ func (s *IamHttpClient) VerifyAccessToken(ctx context.Context, token string) (*A
 	payload, _ := json.Marshal(struct {
 		Token string `json:"token"`
 	}{token})
-	// Todo: Properly handle iam service url and remove hardcoded value.
-	url := "http://iam/authentication/verify"
-
-	request, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(payload))
+	request, err := http.NewRequestWithContext(ctx, "POST", s.AccessTokenUrl, bytes.NewBuffer(payload))
 
 	if err != nil {
 		return nil, err
@@ -69,10 +69,7 @@ func (s *IamHttpClient) VerifyApiKey(ctx context.Context, key string) (*ApiKeyCl
 	payload, _ := json.Marshal(struct {
 		Key string `json:"key"`
 	}{key})
-	// Todo: Properly handle iam service url and remove hardcoded value.
-	url := "http://iam/api-keys/verify"
-
-	request, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewBuffer(payload))
+	request, err := http.NewRequestWithContext(ctx, "POST", s.ApiKeyUrl, bytes.NewBuffer(payload))
 
 	if err != nil {
 		return nil, err

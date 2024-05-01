@@ -20,7 +20,7 @@ type FacilityService interface {
 	Remove(context.Context, string) error
 }
 
-type Drivers struct {
-	AuthenticationService AuthenticationService
-	FacilityService       FacilityService
+type Services struct {
+	Authentication AuthenticationService
+	Facility       FacilityService
 }

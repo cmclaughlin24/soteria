@@ -11,13 +11,13 @@ import (
 
 func main() {
 	httpPort := os.Getenv("HTTP_PORT")
-	drivers, err := core.Init()
+	services, err := core.Init()
 
 	if err != nil {
 		panic(err)
 	}
 
-	mux := rest.Routes(drivers)
+	mux := rest.Routes(services)
 
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", httpPort), mux); err != nil {
 		panic(err)

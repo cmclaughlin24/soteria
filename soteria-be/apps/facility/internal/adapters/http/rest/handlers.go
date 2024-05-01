@@ -16,12 +16,12 @@ type result struct {
 }
 
 type Handler struct {
-	drivers *ports.Drivers
+	services *ports.Services
 }
 
-func NewHandler(drivers *ports.Drivers) *Handler {
+func NewHandler(services *ports.Services) *Handler {
 	return &Handler{
-		drivers: drivers,
+		services: services,
 	}
 }
 
@@ -29,7 +29,7 @@ func (h *Handler) findFacilities(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		facilities, err := h.drivers.FacilityService.FindAll(r.Context())
+		facilities, err := h.services.Facility.FindAll(r.Context())
 		resultChan <- result{facilities, err}
 	}()
 
@@ -55,7 +55,7 @@ func (h *Handler) findFacility(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		facility, err := h.drivers.FacilityService.FindOne(r.Context(), code)
+		facility, err := h.services.Facility.FindOne(r.Context(), code)
 		resultChan <- result{facility, err}
 	}()
 
@@ -92,7 +92,7 @@ func (h *Handler) createFacility(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		f, err := h.drivers.FacilityService.Create(r.Context(), domain.Facility{
+		f, err := h.services.Facility.Create(r.Context(), domain.Facility{
 			Code:      dto.Code,
 			Name:      dto.Name,
 			CreatedBy: sub,
@@ -137,7 +137,7 @@ func (h *Handler) updateFacility(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		f, err := h.drivers.FacilityService.Update(r.Context(), domain.Facility{
+		f, err := h.services.Facility.Update(r.Context(), domain.Facility{
 			Code:      code,
 			Name:      dto.Name,
 			UpdatedBy: sub,
@@ -170,7 +170,7 @@ func (h *Handler) removeFacility(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		err := h.drivers.FacilityService.Remove(r.Context(), code)
+		err := h.services.Facility.Remove(r.Context(), code)
 		resultChan <- result{nil, err}
 	}()
 

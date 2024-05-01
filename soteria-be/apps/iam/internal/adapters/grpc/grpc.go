@@ -12,12 +12,12 @@ import (
 
 type IamGRPCServer struct {
 	iam.UnimplementedIamServiceServer
-	drivers *ports.Drivers
+	services *ports.Services
 }
 
-func NewIamGRPCServer(drivers *ports.Drivers) *IamGRPCServer {
+func NewIamGRPCServer(services *ports.Services) *IamGRPCServer {
 	return &IamGRPCServer{
-		drivers: drivers,
+		services: services,
 	}
 }
 
@@ -42,7 +42,7 @@ func (s *IamGRPCServer) Listen(port string) {
 func (s *IamGRPCServer) VerifyAccessToken(ctx context.Context, req *iam.VerifyTokenRequest) (*iam.AccessTokenClaimsReponse, error) {
 	token := req.GetToken()
 
-	claims, err := s.drivers.AuthenticationService.VerifyAccessToken(ctx, token)
+	claims, err := s.services.Authentication.VerifyAccessToken(ctx, token)
 
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (s *IamGRPCServer) VerifyAccessToken(ctx context.Context, req *iam.VerifyTo
 func (s *IamGRPCServer) VerifyApiKey(ctx context.Context, req *iam.VerifyApiKeyRequest) (*iam.ApiKeyClaimsReponse, error) {
 	apiKey := req.GetKey()
 
-	claims, err := s.drivers.ApiKeyService.VerifyApiKey(ctx, apiKey)
+	claims, err := s.services.ApiKey.VerifyApiKey(ctx, apiKey)
 
 	if err != nil {
 		return nil, err

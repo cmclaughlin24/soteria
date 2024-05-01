@@ -10,11 +10,11 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-func Routes(drivers *ports.Drivers) http.Handler {
-	handler := NewHandler(drivers)
+func Routes(services *ports.Services) http.Handler {
+	handler := NewHandler(services)
 	mux := chi.NewRouter()
-	accessTokenVerifier := iam.AuthenticateAccessToken(drivers.AuthenticationService)
-	apiKeyVerifier := iam.AuthenticateApiKey(drivers.AuthenticationService)
+	accessTokenVerifier := iam.AuthenticateAccessToken(services.Authentication)
+	apiKeyVerifier := iam.AuthenticateApiKey(services.Authentication)
 
 	mux.Use(middleware.Logger)
 	mux.Use(middleware.Timeout(1000 * time.Millisecond))

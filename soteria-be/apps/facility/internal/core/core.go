@@ -7,15 +7,15 @@ import (
 	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 )
 
-func Init() (*ports.Drivers, error) {
+func Init() (*ports.Services, error) {
 	repositories, err := persistance.Connect()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &ports.Drivers{
-		AuthenticationService: services.NewAuthenticationService(&iam.IamHttpClient{}),
-		FacilityService:       services.NewFacilityService(repositories.FacilityRepository),
+	return &ports.Services{
+		Authentication: services.NewAuthenticationService(&iam.IamHttpClient{AccessTokenUrl: "http://iam/authentication/verify", ApiKeyUrl: "http://iam/api-keys/verify"}),
+		Facility:       services.NewFacilityService(repositories.FacilityRepository),
 	}, nil
 }

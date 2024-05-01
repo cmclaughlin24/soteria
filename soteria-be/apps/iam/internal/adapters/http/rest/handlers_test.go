@@ -16,17 +16,17 @@ import (
 func TestHandler_findPermissions(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusOK,
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			&ports.Services{Permission: coretest.NewErrorPermissionService()},
 			http.StatusInternalServerError,
 		},
 	}
@@ -34,7 +34,7 @@ func TestHandler_findPermissions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("GET", "/permissions", nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.findPermissions)
@@ -53,19 +53,19 @@ func TestHandler_findPermissions(t *testing.T) {
 func TestHandler_findPermission(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusOK,
 			"successful",
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			&ports.Services{Permission: coretest.NewErrorPermissionService()},
 			http.StatusInternalServerError,
 			"error",
 		},
@@ -74,7 +74,7 @@ func TestHandler_findPermission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("GET", "/permission/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.findPermission)
@@ -93,25 +93,25 @@ func TestHandler_findPermission(t *testing.T) {
 func TestHandler_createPermission(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        CreatePermissionDto
 	}{
 		{
 			"should yield an CREATED status code if the request was successful",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusCreated,
 			CreatePermissionDto{"australian-cattle-dog", "adopt"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusBadRequest,
 			CreatePermissionDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			&ports.Services{Permission: coretest.NewErrorPermissionService()},
 			http.StatusInternalServerError,
 			CreatePermissionDto{"australian-cattle-dog", "adopt"},
 		},
@@ -120,7 +120,7 @@ func TestHandler_createPermission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/permission", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -140,28 +140,28 @@ func TestHandler_createPermission(t *testing.T) {
 func TestHandler_updatePermssion(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 		dto        UpdatePermissionDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusOK,
 			"1",
 			UpdatePermissionDto{"australian-cattle-dog", "train"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusBadRequest,
 			"1",
 			UpdatePermissionDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			&ports.Services{Permission: coretest.NewErrorPermissionService()},
 			http.StatusInternalServerError,
 			"1",
 			UpdatePermissionDto{"australian-cattle-dog", "train"},
@@ -171,7 +171,7 @@ func TestHandler_updatePermssion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("PATCH", "/permission/"+tt.id, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -191,19 +191,19 @@ func TestHandler_updatePermssion(t *testing.T) {
 func TestHandler_removePermission(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{PermissionsService: coretest.NewSuccessPermissionService()},
+			&ports.Services{Permission: coretest.NewSuccessPermissionService()},
 			http.StatusOK,
 			"successful",
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{PermissionsService: coretest.NewErrorPermissionService()},
+			&ports.Services{Permission: coretest.NewErrorPermissionService()},
 			http.StatusInternalServerError,
 			"error",
 		},
@@ -212,7 +212,7 @@ func TestHandler_removePermission(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("DELETE", "/permission/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.removePermission)
@@ -231,17 +231,17 @@ func TestHandler_removePermission(t *testing.T) {
 func TestHandler_findUsers(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusOK,
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 		},
 	}
@@ -249,7 +249,7 @@ func TestHandler_findUsers(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("GET", "/users", nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.findUsers)
@@ -268,19 +268,19 @@ func TestHandler_findUsers(t *testing.T) {
 func TestHandler_findUser(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusOK,
 			"successful",
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 			"error",
 		},
@@ -289,7 +289,7 @@ func TestHandler_findUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("GET", "/users/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.findUser)
@@ -308,13 +308,13 @@ func TestHandler_findUser(t *testing.T) {
 func TestHandler_createUser(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        CreateUserDto
 	}{
 		{
 			"should yield an CREATED status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusCreated,
 			CreateUserDto{
 				"sydney",
@@ -328,13 +328,13 @@ func TestHandler_createUser(t *testing.T) {
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusBadRequest,
 			CreateUserDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 			CreateUserDto{
 				"sydney",
@@ -351,7 +351,7 @@ func TestHandler_createUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/users", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -371,14 +371,14 @@ func TestHandler_createUser(t *testing.T) {
 func TestHandler_updateUser(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 		dto        UpdateUserDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusOK,
 			"1",
 			UpdateUserDto{
@@ -392,14 +392,14 @@ func TestHandler_updateUser(t *testing.T) {
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusBadRequest,
 			"1",
 			UpdateUserDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 			"1",
 			UpdateUserDto{
@@ -416,7 +416,7 @@ func TestHandler_updateUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("PATCH", "/users/"+tt.id, bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -436,19 +436,19 @@ func TestHandler_updateUser(t *testing.T) {
 func TestHandler_removeUser(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusOK,
 			"successful",
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 			"error",
 		},
@@ -457,7 +457,7 @@ func TestHandler_removeUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			req, _ := http.NewRequest("DELETE", "/users/"+tt.id, nil)
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(h.removeUser)
@@ -476,25 +476,25 @@ func TestHandler_removeUser(t *testing.T) {
 func TestHandler_createApiKey(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        CreateApiKeyDto
 	}{
 		{
 			"should yield an CREATED status code if the request was successful",
-			&ports.Drivers{ApiKeyService: coretest.NewSuccessApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewSuccessApiKeyService()},
 			http.StatusCreated,
 			CreateApiKeyDto{"australian-cattle-dog", []UserPermissionDto{{"training", "sit"}}},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{ApiKeyService: coretest.NewSuccessApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewSuccessApiKeyService()},
 			http.StatusBadRequest,
 			CreateApiKeyDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{ApiKeyService: coretest.NewErrorApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewErrorApiKeyService()},
 			http.StatusInternalServerError,
 			CreateApiKeyDto{"australian-cattle-dog", []UserPermissionDto{{"training", "sit"}}},
 		},
@@ -503,7 +503,7 @@ func TestHandler_createApiKey(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			claims := iam.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
@@ -524,19 +524,19 @@ func TestHandler_createApiKey(t *testing.T) {
 func TestHandler_removeApiKey(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		id         string
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{ApiKeyService: coretest.NewSuccessApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewSuccessApiKeyService()},
 			http.StatusOK,
 			"successful",
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{ApiKeyService: coretest.NewErrorApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewErrorApiKeyService()},
 			http.StatusInternalServerError,
 			"error",
 		},
@@ -545,7 +545,7 @@ func TestHandler_removeApiKey(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			claims := iam.AccessTokenClaims{}
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "DELETE", "/api-keys/"+tt.id, nil)
 			rr := httptest.NewRecorder()
@@ -565,25 +565,25 @@ func TestHandler_removeApiKey(t *testing.T) {
 func TestHandler_verifyApiKey(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        VerifyApiKeyDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{ApiKeyService: coretest.NewSuccessApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewSuccessApiKeyService()},
 			http.StatusOK,
 			VerifyApiKeyDto{"the-oldest-cattled-dog-lived-to-twenty-nine"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{ApiKeyService: coretest.NewSuccessApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewSuccessApiKeyService()},
 			http.StatusBadRequest,
 			VerifyApiKeyDto{},
 		},
 		{
 			"should yield an UNAUTHORIZED status code if the request fails",
-			&ports.Drivers{ApiKeyService: coretest.NewErrorApiKeyService()},
+			&ports.Services{ApiKey: coretest.NewErrorApiKeyService()},
 			http.StatusUnauthorized,
 			VerifyApiKeyDto{"the-oldest-cattled-dog-lived-to-twenty-nine"},
 		},
@@ -592,7 +592,7 @@ func TestHandler_verifyApiKey(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			claims := iam.AccessTokenClaims{}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequestWithContext(iam.SetContext(context.Background(), claims), "POST", "/api-keys", bytes.NewReader(body))
@@ -613,13 +613,13 @@ func TestHandler_verifyApiKey(t *testing.T) {
 func TestHandler_signup(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        SignUpDto
 	}{
 		{
 			"should yield an CREATED status code if the request was successful",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusCreated,
 			SignUpDto{
 				"sydney",
@@ -630,13 +630,13 @@ func TestHandler_signup(t *testing.T) {
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{UserService: coretest.NewSuccessUserService()},
+			&ports.Services{User: coretest.NewSuccessUserService()},
 			http.StatusBadRequest,
 			SignUpDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{UserService: coretest.NewErrorUserService()},
+			&ports.Services{User: coretest.NewErrorUserService()},
 			http.StatusInternalServerError,
 			SignUpDto{
 				"sydney",
@@ -650,7 +650,7 @@ func TestHandler_signup(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/sign-up", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -670,25 +670,25 @@ func TestHandler_signup(t *testing.T) {
 func TestHandler_signin(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        SignInDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusOK,
 			SignInDto{"sydney@aaustralian-cattle-dog.com", "hduson"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusBadRequest,
 			SignInDto{},
 		},
 		{
 			"should yield an INTERNAL SERVER ERROR status code if the request fails",
-			&ports.Drivers{AuthenticationService: coretest.NewErrorAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewErrorAuthenticationService()},
 			http.StatusInternalServerError,
 			SignInDto{"sydney@aaustralian-cattle-dog.com", "hduson"},
 		},
@@ -697,7 +697,7 @@ func TestHandler_signin(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/sign-in", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -717,25 +717,25 @@ func TestHandler_signin(t *testing.T) {
 func TestHandler_verifyAccessToken(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        TokenDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusOK,
 			TokenDto{"cattle-dogs-are-hard-working-and-loyal"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusBadRequest,
 			TokenDto{},
 		},
 		{
 			"should yield an UNAUTHORIZED status code if the request fails",
-			&ports.Drivers{AuthenticationService: coretest.NewErrorAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewErrorAuthenticationService()},
 			http.StatusUnauthorized,
 			TokenDto{"cattle-dogs-are-hard-working-and-loyal"},
 		},
@@ -744,7 +744,7 @@ func TestHandler_verifyAccessToken(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/verify", bytes.NewReader(body))
 			rr := httptest.NewRecorder()
@@ -764,25 +764,25 @@ func TestHandler_verifyAccessToken(t *testing.T) {
 func TestHandler_refreshAccessToken(t *testing.T) {
 	tests := []struct {
 		name       string
-		drivers    *ports.Drivers
+		services   *ports.Services
 		statusCode int
 		dto        TokenDto
 	}{
 		{
 			"should yield an OK status code if the request was successful",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusOK,
 			TokenDto{"cattle-dogs-are-hard-working-and-loyal"},
 		},
 		{
 			"should yield a BAD REQUEST status code if the payload is invalid",
-			&ports.Drivers{AuthenticationService: coretest.NewSuccessAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewSuccessAuthenticationService()},
 			http.StatusBadRequest,
 			TokenDto{},
 		},
 		{
 			"should yield an UNAUTHORIZED status code if the request fails",
-			&ports.Drivers{AuthenticationService: coretest.NewErrorAuthenticationService()},
+			&ports.Services{Authentication: coretest.NewErrorAuthenticationService()},
 			http.StatusUnauthorized,
 			TokenDto{"cattle-dogs-are-hard-working-and-loyal"},
 		},
@@ -791,7 +791,7 @@ func TestHandler_refreshAccessToken(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange.
-			h := &Handler{tt.drivers}
+			h := &Handler{tt.services}
 			body, _ := json.Marshal(tt.dto)
 			req, _ := http.NewRequest("POST", "/refresh", bytes.NewReader(body))
 			rr := httptest.NewRecorder()

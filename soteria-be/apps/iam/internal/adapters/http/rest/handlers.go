@@ -16,12 +16,12 @@ type result struct {
 }
 
 type Handler struct {
-	drivers *ports.Drivers
+	services *ports.Services
 }
 
-func NewHandler(drivers *ports.Drivers) *Handler {
+func NewHandler(drivers *ports.Services) *Handler {
 	return &Handler{
-		drivers: drivers,
+		services: drivers,
 	}
 }
 
@@ -29,7 +29,7 @@ func (h *Handler) findPermissions(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		permissions, err := h.drivers.PermissionsService.FindAll(r.Context())
+		permissions, err := h.services.Permission.FindAll(r.Context())
 		resultChan <- result{permissions, err}
 	}()
 
@@ -55,7 +55,7 @@ func (h *Handler) findPermission(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		p, err := h.drivers.PermissionsService.FindOne(r.Context(), id)
+		p, err := h.services.Permission.FindOne(r.Context(), id)
 		resultChan <- result{p, err}
 	}()
 
@@ -91,7 +91,7 @@ func (h *Handler) createPermission(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		p, err := h.drivers.PermissionsService.Create(r.Context(), *domain.NewPermission(
+		p, err := h.services.Permission.Create(r.Context(), *domain.NewPermission(
 			"",
 			dto.Resource,
 			dto.Action,
@@ -135,7 +135,7 @@ func (h *Handler) updatePermssion(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		p, err := h.drivers.PermissionsService.Update(r.Context(), *domain.NewPermission(
+		p, err := h.services.Permission.Update(r.Context(), *domain.NewPermission(
 			id,
 			dto.Resource,
 			dto.Action,
@@ -169,7 +169,7 @@ func (h *Handler) removePermission(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		err := h.drivers.PermissionsService.Remove(r.Context(), id)
+		err := h.services.Permission.Remove(r.Context(), id)
 		resultChan <- result{nil, err}
 	}()
 
@@ -196,7 +196,7 @@ func (h *Handler) findUsers(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		users, err := h.drivers.UserService.FindAll(r.Context())
+		users, err := h.services.User.FindAll(r.Context())
 		resultChan <- result{users, err}
 	}()
 
@@ -222,7 +222,7 @@ func (h *Handler) findUser(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		u, err := h.drivers.UserService.FindOne(r.Context(), id)
+		u, err := h.services.User.FindOne(r.Context(), id)
 		resultChan <- result{u, err}
 	}()
 
@@ -275,7 +275,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		u, err := h.drivers.UserService.Create(r.Context(), *u)
+		u, err := h.services.User.Create(r.Context(), *u)
 		resultChan <- result{u, err}
 	}()
 
@@ -332,7 +332,7 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		u, err := h.drivers.UserService.Update(r.Context(), *u)
+		u, err := h.services.User.Update(r.Context(), *u)
 		resultChan <- result{u, err}
 	}()
 
@@ -361,7 +361,7 @@ func (h *Handler) removeUser(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		err := h.drivers.UserService.Remove(r.Context(), id)
+		err := h.services.User.Remove(r.Context(), id)
 		resultChan <- result{nil, err}
 	}()
 
@@ -409,7 +409,7 @@ func (h *Handler) createApiKey(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		apiKey, err := h.drivers.ApiKeyService.Create(r.Context(), dto.Name, permissions, sub)
+		apiKey, err := h.services.ApiKey.Create(r.Context(), dto.Name, permissions, sub)
 		resultChan <- result{apiKey, err}
 	}()
 
@@ -438,7 +438,7 @@ func (h *Handler) removeApiKey(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		err := h.drivers.ApiKeyService.Remove(r.Context(), id)
+		err := h.services.ApiKey.Remove(r.Context(), id)
 		resultChan <- result{nil, err}
 	}()
 
@@ -475,7 +475,7 @@ func (h *Handler) verifyApiKey(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		claims, err := h.drivers.ApiKeyService.VerifyApiKey(r.Context(), dto.Key)
+		claims, err := h.services.ApiKey.VerifyApiKey(r.Context(), dto.Key)
 		resultChan <- result{claims, err}
 	}()
 
@@ -514,7 +514,7 @@ func (h *Handler) signup(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		_, err := h.drivers.UserService.Create(r.Context(), *domain.NewUser(
+		_, err := h.services.User.Create(r.Context(), *domain.NewUser(
 			"",
 			dto.Name,
 			dto.Email,
@@ -560,7 +560,7 @@ func (h *Handler) signin(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		tokens, err := h.drivers.AuthenticationService.Signin(r.Context(), dto.Email, dto.Password)
+		tokens, err := h.services.Authentication.Signin(r.Context(), dto.Email, dto.Password)
 		resultChan <- result{tokens, err}
 	}()
 
@@ -599,7 +599,7 @@ func (h *Handler) verifyAccessToken(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		claims, err := h.drivers.AuthenticationService.VerifyAccessToken(r.Context(), dto.Token)
+		claims, err := h.services.Authentication.VerifyAccessToken(r.Context(), dto.Token)
 		resultChan <- result{claims, err}
 	}()
 
@@ -638,7 +638,7 @@ func (h *Handler) refreshAccessToken(w http.ResponseWriter, r *http.Request) {
 	resultChan := make(chan result)
 
 	go func() {
-		tokens, err := h.drivers.AuthenticationService.RefreshAccessToken(r.Context(), dto.Token)
+		tokens, err := h.services.Authentication.RefreshAccessToken(r.Context(), dto.Token)
 		resultChan <- result{tokens, err}
 	}()
 

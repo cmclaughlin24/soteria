@@ -10,7 +10,7 @@ import (
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/pkg/hash"
 )
 
-func Init() (*ports.Drivers, error) {
+func Init() (*ports.Services, error) {
 	repositories, err := persistance.Connect()
 
 	if err != nil {
@@ -25,16 +25,16 @@ func Init() (*ports.Drivers, error) {
 
 	tokenStorage := services.NewTokenStorage(cacheManager)
 
-	return &ports.Drivers{
-		ApiKeyService: services.NewApiKeyService(repositories.ApiKeyRepository, hash.BcryptService{}, cacheManager),
-		AuthenticationService: services.NewAuthenticationService(repositories.UserRepository, tokenStorage, hash.BcryptService{}, services.JwtSignOptions{
+	return &ports.Services{
+		ApiKey: services.NewApiKeyService(repositories.ApiKeyRepository, hash.BcryptService{}, cacheManager),
+		Authentication: services.NewAuthenticationService(repositories.UserRepository, tokenStorage, hash.BcryptService{}, services.JwtSignOptions{
 			Secret:     os.Getenv("JWT_SECRET"),
 			Audience:   os.Getenv("JWT_TOKEN_AUDIENCE"),
 			Issuer:     os.Getenv("JWT_TOKEN_ISSUER"),
 			Ttl:        3600,
 			RefreshTtl: 86400,
 		}),
-		PermissionsService: services.NewPermissionService(repositories.PermissionRepository),
-		UserService:        services.NewUserService(repositories.UserRepository, hash.BcryptService{}, tokenStorage),
+		Permission: services.NewPermissionService(repositories.PermissionRepository),
+		User:       services.NewUserService(repositories.UserRepository, hash.BcryptService{}, tokenStorage),
 	}, nil
 }
