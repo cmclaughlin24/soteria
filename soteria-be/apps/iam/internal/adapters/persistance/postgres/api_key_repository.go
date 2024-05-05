@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/domain"
 )
@@ -88,9 +87,7 @@ func (r *PgxApiKeyRepository) Remove(ctx context.Context, id string) error {
 
 	defer stmt.Close()
 
-	_, err = stmt.ExecContext(ctx, id, time.Now())
-
-	if err != nil {
+	if _, err := stmt.ExecContext(ctx, id); err != nil {
 		return err
 	}
 

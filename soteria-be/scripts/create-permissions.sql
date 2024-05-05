@@ -6,6 +6,11 @@ VALUES
   (gen_random_uuid(), 'facility', 'create'),
   (gen_random_uuid(), 'facility', 'update'),
   (gen_random_uuid(), 'facility', 'remove'),
+  (gen_random_uuid(), 'location', 'list'),
+  (gen_random_uuid(), 'location', 'get'),
+  (gen_random_uuid(), 'location', 'create'),
+  (gen_random_uuid(), 'location', 'update'),
+  (gen_random_uuid(), 'location', 'remove'),
   /* IAM Service Permissions */
   (gen_random_uuid(), 'user', 'list'),
   (gen_random_uuid(), 'user', 'get'),

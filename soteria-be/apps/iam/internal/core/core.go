@@ -26,15 +26,15 @@ func Init() (*ports.Services, error) {
 	tokenStorage := services.NewTokenStorage(cacheManager)
 
 	return &ports.Services{
-		ApiKey: services.NewApiKeyService(repositories.ApiKeyRepository, hash.BcryptService{}, cacheManager),
-		Authentication: services.NewAuthenticationService(repositories.UserRepository, tokenStorage, hash.BcryptService{}, services.JwtSignOptions{
+		ApiKey: services.NewApiKeyService(repositories.ApiKey, hash.BcryptService{}, cacheManager),
+		Authentication: services.NewAuthenticationService(repositories.User, tokenStorage, hash.BcryptService{}, services.JwtSignOptions{
 			Secret:     os.Getenv("JWT_SECRET"),
 			Audience:   os.Getenv("JWT_TOKEN_AUDIENCE"),
 			Issuer:     os.Getenv("JWT_TOKEN_ISSUER"),
 			Ttl:        3600,
 			RefreshTtl: 86400,
 		}),
-		Permission: services.NewPermissionService(repositories.PermissionRepository),
-		User:       services.NewUserService(repositories.UserRepository, hash.BcryptService{}, tokenStorage),
+		Permission: services.NewPermissionService(repositories.Permission),
+		User:       services.NewUserService(repositories.User, hash.BcryptService{}, tokenStorage),
 	}, nil
 }

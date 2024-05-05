@@ -27,13 +27,14 @@ func Connect() (*ports.Repositories, error) {
 	}
 
 	return &ports.Repositories{
-		FacilityRepository: NewFacilityRepository(db),
+		Facility: NewFacilityRepository(db),
+		Location: NewLocationRepository(db),
 	}, nil
 }
 
 func createTables(db *sql.DB) error {
 	createFacilityTable := `
-		CREATE TABLE IF NOT EXISTS facilities(
+		CREATE TABLE IF NOT EXISTS facility(
 			code VARCHAR(25) NOT NULL,
 			name VARCHAR(250) NOT NULL,
 			createdBy VARCHAR(100) NOT NULL,
@@ -45,6 +46,27 @@ func createTables(db *sql.DB) error {
 	`
 
 	if _, err := db.Exec(createFacilityTable); err != nil {
+		return err
+	}
+
+	createLocationTable := `
+		CREATE TABLE IF NOT EXISTS location(
+			id SERIAL PRIMARY KEY,
+			code VARCHAR(25) NOT NULL,
+			name VARCHAR(250) NOT NULL,
+			createdBy VARCHAR(100) NOT NULL,
+			createdAt TIMESTAMP DEFAULT NOW(),
+			updatedBy VARCHAR(100) NULL,
+			updatedAt TIMESTAMP NULL,
+			facilityCode VARCHAR(25) NOT NULL,
+			parentId INTEGER NULL,
+			FOREIGN KEY(facilityCode) REFERENCES facility(code) ON DELETE CASCADE,
+			FOREIGN KEY(parentId) REFERENCES location(id) ON DELETE CASCADE,
+			CONSTRAINT Uq_Facility_Location UNIQUE NULLS NOT DISTINCT (facilityCode, parentId, code)
+		)
+	`
+
+	if _, err := db.Exec(createLocationTable); err != nil {
 		return err
 	}
 

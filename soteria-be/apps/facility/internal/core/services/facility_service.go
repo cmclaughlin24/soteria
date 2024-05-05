@@ -25,12 +25,12 @@ func (s *FacilityService) FindOne(ctx context.Context, code string) (*domain.Fac
 	return s.repository.FindOne(ctx, code)
 }
 
-func (s *FacilityService) Create(ctx context.Context, permission domain.Facility) (*domain.Facility, error) {
-	return s.repository.Create(ctx, permission)
+func (s *FacilityService) Create(ctx context.Context, facility domain.Facility) (*domain.Facility, error) {
+	return s.repository.Create(ctx, facility)
 }
 
-func (s *FacilityService) Update(ctx context.Context, permission domain.Facility) (*domain.Facility, error) {
-	return s.repository.Update(ctx, permission)
+func (s *FacilityService) Update(ctx context.Context, facility domain.Facility) (*domain.Facility, error) {
+	return s.repository.Update(ctx, facility)
 }
 
 func (s *FacilityService) Remove(ctx context.Context, code string) error {

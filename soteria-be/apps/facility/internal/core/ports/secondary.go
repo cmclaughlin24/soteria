@@ -20,6 +20,15 @@ type FacilityRepository interface {
 	Remove(context.Context, string) error
 }
 
+type LocationRepository interface {
+	FindAll(context.Context) ([]domain.Location, error)
+	FindOne(context.Context, int) (*domain.Location, error)
+	Create(context.Context, domain.Location) (*domain.Location, error)
+	Update(context.Context, domain.Location) (*domain.Location, error)
+	Remove(context.Context, int) error
+}
+
 type Repositories struct {
-	FacilityRepository FacilityRepository
+	Facility FacilityRepository
+	Location LocationRepository
 }

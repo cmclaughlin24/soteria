@@ -19,7 +19,7 @@ func NewFacilityRepository(db *sql.DB) *FacilityRepository {
 }
 
 func (r *FacilityRepository) FindAll(ctx context.Context) ([]domain.Facility, error) {
-	query := "SELECT code, name, createdBy, updatedBy FROM facilities"
+	query := "SELECT code, name, createdBy, updatedBy FROM facility"
 
 	rows, err := r.db.QueryContext(ctx, query)
 
@@ -54,7 +54,7 @@ func (r *FacilityRepository) FindAll(ctx context.Context) ([]domain.Facility, er
 }
 
 func (r *FacilityRepository) FindOne(ctx context.Context, code string) (*domain.Facility, error) {
-	query := "SELECT code, name, createdBy, updatedBy FROM facilities WHERE code = $1"
+	query := "SELECT code, name, createdBy, updatedBy FROM facility WHERE code = $1"
 
 	row := r.db.QueryRowContext(ctx, query, code)
 	var f domain.Facility
@@ -77,7 +77,7 @@ func (r *FacilityRepository) FindOne(ctx context.Context, code string) (*domain.
 }
 
 func (r *FacilityRepository) Create(ctx context.Context, f domain.Facility) (*domain.Facility, error) {
-	stmt, err := r.db.PrepareContext(ctx, "INSERT INTO facilities(code, name, createdBy) VALUES($1, $2, $3)")
+	stmt, err := r.db.PrepareContext(ctx, "INSERT INTO facility(code, name, createdBy) VALUES($1, $2, $3)")
 
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (r *FacilityRepository) Create(ctx context.Context, f domain.Facility) (*do
 }
 
 func (r *FacilityRepository) Update(ctx context.Context, f domain.Facility) (*domain.Facility, error) {
-	stmt, err := r.db.PrepareContext(ctx, "UPDATE facilities SET name = $2, updatedBy = $3, updatedAt = $4 WHERE code = $1")
+	stmt, err := r.db.PrepareContext(ctx, "UPDATE facility SET name = $2, updatedBy = $3, updatedAt = $4 WHERE code = $1")
 
 	if err != nil {
 		return nil, err
@@ -113,7 +113,7 @@ func (r *FacilityRepository) Update(ctx context.Context, f domain.Facility) (*do
 }
 
 func (r *FacilityRepository) Remove(ctx context.Context, code string) error {
-	stmt, err := r.db.PrepareContext(ctx, "DELETE FROM facilities WHERE code = $1")
+	stmt, err := r.db.PrepareContext(ctx, "DELETE FROM facility WHERE code = $1")
 
 	if err != nil {
 		return err

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/adapters/grpc/iam"
 	"github.com/cmclaughlin24/soteria-be/apps/iam/internal/core/ports"
+	"github.com/cmclaughlin24/soteria-be/pkg/iam"
 	"google.golang.org/grpc"
 )
 

@@ -200,9 +200,7 @@ func (r *PgxUserRepository) Remove(ctx context.Context, id string) error {
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(id)
-
-	if err != nil {
+	if _, err := stmt.ExecContext(ctx, id); err != nil {
 		return err
 	}
 

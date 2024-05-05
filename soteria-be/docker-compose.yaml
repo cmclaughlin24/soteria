@@ -21,11 +21,12 @@ services:
         APPLICATION: iam
     ports:
       - '8000:80'
-      - '18000:18080'
+      - '50001:50001'
     env_file:
       - ./env/iam.env
     volumes:
       - './apps/iam:/app/apps/iam'
+      - './pkg:/app/pkg'
     tty: true
     stdin_open: true
     depends_on:
@@ -43,6 +44,7 @@ services:
       - ./env/facility.env
     volumes:
       - './apps/facility:/app/apps/facility'
+      - './pkg:/app/pkg'
     tty: true
     stdin_open: true
     depends_on:

@@ -29,5 +29,15 @@ func Routes(services *ports.Services) http.Handler {
 		r.With(iam.Authorize("facility", "remove")).Delete("/{code}", handler.removeFacility)
 	})
 
+	mux.Route("/locations", func(r chi.Router) {
+		r.Use(iam.Authenticate(accessTokenVerifier, apiKeyVerifier))
+
+		r.Get("/", handler.findLocations)
+		r.Get("/{id}", handler.findLocation)
+		r.Post("/", handler.createLocation)
+		r.Patch("/{id}", handler.updateLocation)
+		r.Delete("/{id}", handler.removeLocation)
+	})
+
 	return mux
 }

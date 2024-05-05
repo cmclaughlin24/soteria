@@ -15,7 +15,8 @@ func Init() (*ports.Services, error) {
 	}
 
 	return &ports.Services{
-		Authentication: services.NewAuthenticationService(&iam.IamHttpClient{AccessTokenUrl: "http://iam/authentication/verify", ApiKeyUrl: "http://iam/api-keys/verify"}),
-		Facility:       services.NewFacilityService(repositories.FacilityRepository),
+		Authentication: services.NewAuthenticationService(iam.NewIamGrpcClient("iam:50001")),
+		Facility:       services.NewFacilityService(repositories.Facility),
+		Location:       services.NewLocationService(repositories.Location),
 	}, nil
 }

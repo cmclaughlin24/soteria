@@ -27,9 +27,9 @@ func Connect() (*ports.Repositories, error) {
 	}
 
 	return &ports.Repositories{
-		ApiKeyRepository:     NewApiKeyRepository(db),
-		PermissionRepository: NewPermissionRepository(db),
-		UserRepository:       NewUserRepository(db),
+		ApiKey:     NewApiKeyRepository(db),
+		Permission: NewPermissionRepository(db),
+		User:       NewUserRepository(db),
 	}, nil
 }
 

@@ -36,7 +36,7 @@ type UserRepository interface {
 }
 
 type Repositories struct {
-	ApiKeyRepository     ApiKeyRepository
-	PermissionRepository PermissionRepository
-	UserRepository       UserRepository
+	ApiKey     ApiKeyRepository
+	Permission PermissionRepository
+	User       UserRepository
 }
