@@ -32,11 +32,21 @@ func Routes(services *ports.Services) http.Handler {
 	mux.Route("/locations", func(r chi.Router) {
 		r.Use(iam.Authenticate(accessTokenVerifier, apiKeyVerifier))
 
-		r.Get("/", handler.findLocations)
-		r.Get("/{id}", handler.findLocation)
-		r.Post("/", handler.createLocation)
-		r.Patch("/{id}", handler.updateLocation)
-		r.Delete("/{id}", handler.removeLocation)
+		r.With(iam.Authorize("location", "list")).Get("/", handler.findLocations)
+		r.With(iam.Authorize("location", "get")).Get("/{id}", handler.findLocation)
+		r.With(iam.Authorize("location", "create")).Post("/", handler.createLocation)
+		r.With(iam.Authorize("location", "update")).Patch("/{id}", handler.updateLocation)
+		r.With(iam.Authorize("location", "remove")).Delete("/{id}", handler.removeLocation)
+	})
+
+	mux.Route("/location-types", func(r chi.Router) {
+		r.Use(iam.Authenticate(accessTokenVerifier, apiKeyVerifier))
+
+		r.Get("/", handler.findLocationTypes)
+		r.Get("/{id}", handler.findLocationType)
+		r.Post("/", handler.createLocationType)
+		r.Patch("/{id}", handler.updateLocationType)
+		r.Delete("/{id}", handler.removeLocationType)
 	})
 
 	return mux

@@ -27,8 +27,9 @@ func Connect() (*ports.Repositories, error) {
 	}
 
 	return &ports.Repositories{
-		Facility: NewFacilityRepository(db),
-		Location: NewLocationRepository(db),
+		Facility:     NewFacilityRepository(db),
+		Location:     NewLocationRepository(db),
+		LocationType: NewLocationTypeRepository(db),
 	}, nil
 }
 
@@ -67,6 +68,22 @@ func createTables(db *sql.DB) error {
 	`
 
 	if _, err := db.Exec(createLocationTable); err != nil {
+		return err
+	}
+
+	createLocationTypeTable := `
+		CREATE TABLE IF NOT EXISTS locationType(
+			id SERIAL PRIMARY KEY,
+			name VARCHAR(250) NOT NULL,
+			enableChildren BOOLEAN DEFAULT FALSE,
+			createdBy VARCHAR(100) NOT NULL,
+			createdAt TIMESTAMP DEFAULT NOW(),
+			updatedBy VARCHAR(100) NULL,
+			updatedAt TIMESTAMP NULL
+		)
+	`
+
+	if _, err := db.Exec(createLocationTypeTable); err != nil {
 		return err
 	}
 

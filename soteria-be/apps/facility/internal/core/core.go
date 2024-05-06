@@ -18,5 +18,6 @@ func Init() (*ports.Services, error) {
 		Authentication: services.NewAuthenticationService(iam.NewIamGrpcClient("iam:50001")),
 		Facility:       services.NewFacilityService(repositories.Facility),
 		Location:       services.NewLocationService(repositories.Location),
+		LocationType:   services.NewLocationTypeService(repositories.LocationType),
 	}, nil
 }

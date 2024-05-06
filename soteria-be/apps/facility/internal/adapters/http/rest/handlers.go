@@ -368,3 +368,175 @@ func (h *Handler) removeLocation(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 }
+
+func (h *Handler) findLocationTypes(w http.ResponseWriter, r *http.Request) {
+	resultChan := make(chan result)
+
+	go func() {
+		locationTypes, err := h.services.LocationType.FindAll(r.Context())
+		resultChan <- result{locationTypes, err}
+	}()
+
+	select {
+	case <-r.Context().Done():
+		return
+	case res := <-resultChan:
+		if res.err != nil {
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, httputils.ApiErrorResponseDto{
+				Message:    res.err.Error(),
+				Error:      "Internal Server Error",
+				StatusCode: http.StatusInternalServerError,
+			})
+			return
+		}
+
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
+	}
+}
+
+func (h *Handler) findLocationType(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	resultChan := make(chan result)
+
+	go func() {
+		id, _ := strconv.Atoi(id)
+		locationType, err := h.services.LocationType.FindOne(r.Context(), id)
+		resultChan <- result{locationType, err}
+	}()
+
+	select {
+	case <-r.Context().Done():
+		return
+	case res := <-resultChan:
+		if res.err != nil {
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, httputils.ApiErrorResponseDto{
+				Message:    res.err.Error(),
+				Error:      "Internal Server Error",
+				StatusCode: http.StatusInternalServerError,
+			})
+			return
+		}
+
+		httputils.SendJsonResponse(w, http.StatusOK, res.data)
+	}
+}
+
+func (h *Handler) createLocationType(w http.ResponseWriter, r *http.Request) {
+	var dto CreateLocationTypeDto
+
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, httputils.ApiErrorResponseDto{
+			Message:    err.Error(),
+			Error:      "Bad Request",
+			StatusCode: http.StatusBadRequest,
+		})
+		return
+	}
+
+	sub, _ := iam.ClaimsFromContext(r.Context()).GetSubject()
+	resultChan := make(chan result)
+
+	go func() {
+		lt, err := h.services.LocationType.Create(r.Context(), domain.LocationType{
+			Name:           dto.Name,
+			EnableChildren: dto.EnableChildren,
+			CreatedBy:      sub,
+		})
+		resultChan <- result{lt, err}
+	}()
+
+	select {
+	case <-r.Context().Done():
+		return
+	case res := <-resultChan:
+		if res.err != nil {
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, httputils.ApiErrorResponseDto{
+				Message:    res.err.Error(),
+				Error:      "Internal Server Error",
+				StatusCode: http.StatusInternalServerError,
+			})
+			return
+		}
+
+		httputils.SendJsonResponse(w, http.StatusCreated, httputils.ApiResponseDto{
+			Message: "Sucessfully created location type!",
+			Data:    res.data,
+		})
+	}
+}
+
+func (h *Handler) updateLocationType(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	var dto UpdateLocationTypeDto
+
+	if err := httputils.ReadJsonPayload(r, &dto); err != nil {
+		httputils.SendJsonResponse(w, http.StatusBadRequest, httputils.ApiErrorResponseDto{
+			Message:    err.Error(),
+			Error:      "Bad Request",
+			StatusCode: http.StatusBadRequest,
+		})
+		return
+	}
+
+	sub, _ := iam.ClaimsFromContext(r.Context()).GetSubject()
+	resultChan := make(chan result)
+
+	go func() {
+		id, _ := strconv.Atoi(id)
+		lt, err := h.services.LocationType.Update(r.Context(), domain.LocationType{
+			Id:             id,
+			Name:           dto.Name,
+			EnableChildren: dto.EnableChildren,
+			CreatedBy:      sub,
+		})
+		resultChan <- result{lt, err}
+	}()
+
+	select {
+	case <-r.Context().Done():
+		return
+	case res := <-resultChan:
+		if res.err != nil {
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, httputils.ApiErrorResponseDto{
+				Message:    res.err.Error(),
+				Error:      "Internal Server Error",
+				StatusCode: http.StatusInternalServerError,
+			})
+			return
+		}
+
+		httputils.SendJsonResponse(w, http.StatusOK, httputils.ApiResponseDto{
+			Message: "Sucessfully updated location type!",
+			Data:    res.data,
+		})
+	}
+}
+
+func (h *Handler) removeLocationType(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	resultChan := make(chan result)
+
+	go func() {
+		id, _ := strconv.Atoi(id)
+		err := h.services.LocationType.Remove(r.Context(), id)
+		resultChan <- result{nil, err}
+	}()
+
+	select {
+	case <-r.Context().Done():
+		return
+	case res := <-resultChan:
+		if res.err != nil {
+			httputils.SendJsonResponse(w, http.StatusInternalServerError, httputils.ApiErrorResponseDto{
+				Message:    res.err.Error(),
+				Error:      "Internal Server Error",
+				StatusCode: http.StatusInternalServerError,
+			})
+			return
+		}
+
+		httputils.SendJsonResponse(w, http.StatusOK, httputils.ApiResponseDto{
+			Message: "Successfully deleted location type!",
+		})
+	}
+}

@@ -28,8 +28,17 @@ type LocationService interface {
 	Remove(context.Context, int) error
 }
 
+type LocationTypeService interface {
+	FindAll(context.Context) ([]domain.LocationType, error)
+	FindOne(context.Context, int) (*domain.LocationType, error)
+	Create(context.Context, domain.LocationType) (*domain.LocationType, error)
+	Update(context.Context, domain.LocationType) (*domain.LocationType, error)
+	Remove(context.Context, int) error
+}
+
 type Services struct {
 	Authentication AuthenticationService
 	Facility       FacilityService
 	Location       LocationService
+	LocationType   LocationTypeService
 }
