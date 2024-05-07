@@ -19,7 +19,7 @@ func NewLocationRepository(db *sql.DB) *LocationRepository {
 }
 
 func (r *LocationRepository) FindAll(ctx context.Context) ([]domain.Location, error) {
-	query := "SELECT id, code, name, createdBy, updatedBy, facilityCode, parentId FROM location"
+	query := "SELECT id, code, name, createdBy, updatedBy, facilityCode, locationTypeId, parentId FROM location"
 
 	rows, err := r.db.QueryContext(ctx, query)
 
@@ -43,6 +43,7 @@ func (r *LocationRepository) FindAll(ctx context.Context) ([]domain.Location, er
 			&l.CreatedBy,
 			&updatedBy,
 			&l.FacilityCode,
+			&l.LocationTypeId,
 			&parentId,
 		)
 
@@ -60,7 +61,7 @@ func (r *LocationRepository) FindAll(ctx context.Context) ([]domain.Location, er
 }
 
 func (r *LocationRepository) FindOne(ctx context.Context, id int) (*domain.Location, error) {
-	query := "SELECT id, code, name, createdBy, updatedBy, facilityCode, parentId FROM location WHERE id = $1"
+	query := "SELECT id, code, name, createdBy, updatedBy, facilityCode, locationTypeId, parentId FROM location WHERE id = $1"
 
 	row := r.db.QueryRowContext(ctx, query, id)
 	var l domain.Location
@@ -74,6 +75,7 @@ func (r *LocationRepository) FindOne(ctx context.Context, id int) (*domain.Locat
 		&l.CreatedBy,
 		&updatedBy,
 		&l.FacilityCode,
+		&l.LocationTypeId,
 		&parentId,
 	)
 
@@ -93,10 +95,11 @@ func (r *LocationRepository) Create(ctx context.Context, l domain.Location) (*do
 				code,
 				name,
 				facilityCode,
+				locationTypeId,
 				parentId,
 				createdBy
 			)
-		VALUES($1, $2, $3, $4, $5)
+		VALUES($1, $2, $3, $4, $5, $6)
 	`)
 
 	if err != nil {
@@ -105,7 +108,7 @@ func (r *LocationRepository) Create(ctx context.Context, l domain.Location) (*do
 
 	defer stmt.Close()
 
-	result, err := stmt.ExecContext(ctx, l.Code, l.Name, l.FacilityCode, newNullInt64(l.ParentId), l.CreatedBy)
+	result, err := stmt.ExecContext(ctx, l.Code, l.Name, l.FacilityCode, int64(l.LocationTypeId), newNullInt64(l.ParentId), l.CreatedBy)
 
 	if err != nil {
 		return nil, err
@@ -118,7 +121,7 @@ func (r *LocationRepository) Create(ctx context.Context, l domain.Location) (*do
 }
 
 func (r *LocationRepository) Update(ctx context.Context, l domain.Location) (*domain.Location, error) {
-	stmt, err := r.db.PrepareContext(ctx, "UPDATE location SET code = $2, name = $3, parentId = $4, updatedAt = $5 WHERE id = $1")
+	stmt, err := r.db.PrepareContext(ctx, "UPDATE location SET code = $2, name = $3, locationTypeId = $4, parentId = $5, updatedAt = $6 WHERE id = $1")
 
 	if err != nil {
 		return nil, err
@@ -126,7 +129,7 @@ func (r *LocationRepository) Update(ctx context.Context, l domain.Location) (*do
 
 	defer stmt.Close()
 
-	_, err = stmt.ExecContext(ctx, l.Id, l.Code, l.Name, newNullInt64(l.ParentId), time.Now())
+	_, err = stmt.ExecContext(ctx, l.Id, l.Code, l.Name, int64(l.LocationTypeId), newNullInt64(l.ParentId), time.Now())
 
 	if err != nil {
 		return nil, err

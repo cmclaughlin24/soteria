@@ -263,11 +263,12 @@ func (h *Handler) createLocation(w http.ResponseWriter, r *http.Request) {
 
 	go func() {
 		l, err := h.services.Location.Create(r.Context(), domain.Location{
-			Code:         dto.Code,
-			Name:         dto.Name,
-			FacilityCode: dto.FacilityCode,
-			ParentId:     dto.ParentId,
-			CreatedBy:    sub,
+			Code:           dto.Code,
+			Name:           dto.Name,
+			FacilityCode:   dto.FacilityCode,
+			LocationTypeId: dto.LocationTypeId,
+			ParentId:       dto.ParentId,
+			CreatedBy:      sub,
 		})
 		resultChan <- result{l, err}
 	}()
@@ -311,11 +312,12 @@ func (h *Handler) updateLocation(w http.ResponseWriter, r *http.Request) {
 	go func() {
 		id, _ := strconv.Atoi(id)
 		l, err := h.services.Location.Update(r.Context(), domain.Location{
-			Id:        id,
-			Code:      dto.Code,
-			Name:      dto.Name,
-			ParentId:  dto.ParentId,
-			UpdatedBy: sub,
+			Id:             id,
+			Code:           dto.Code,
+			Name:           dto.Name,
+			LocationTypeId: dto.LocationTypeId,
+			ParentId:       dto.ParentId,
+			UpdatedBy:      sub,
 		})
 		resultChan <- result{l, err}
 	}()
